@@ -9,6 +9,7 @@ import { AUTH_PATH, CHAT_DETAIL_PATH, CHAT_PATH, MAIN_PATH, USER_PATH } from './
 import Main from './views/Main';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Header from './layouts/Header';
+import Authentication from './views/Authentication';
 
 
 //   component: Application 컴포넌트   //
@@ -47,7 +48,7 @@ function App() {
       <Routes>
         <Route element={<Container />}>
           <Route path={MAIN_PATH()} element={<Main />} />
-          <Route path={AUTH_PATH()} element={<Main />} />
+          <Route path={AUTH_PATH()} element={<Authentication />} />
           <Route path={USER_PATH("bincher")} element={<Main />} />
           <Route path={CHAT_PATH(1)} element={<Main />} />
           <Route path={CHAT_DETAIL_PATH(1)} element={<Main />} />

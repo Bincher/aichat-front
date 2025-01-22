@@ -21,12 +21,12 @@ export default function Footer() {
             <div className='footer-top'>
                 <div className='footer-logo-box'>
                     <div className='icon-box'>
-                        <div className='icon logo-light-icon'></div>
+                        <div className='icon logo-chat-bot-icon'></div>
                     </div>
-                    <div className='footer-logo-text'>{'Hoons Board'}</div>
+                    <div className='footer-logo-text'>{'CHAT with AI secretary'}</div>
                 </div>
                 <div className='footer-link-box'>
-                    <div className='footer-email-link'>{'local1557@gmail.com'}</div>
+                    <div className='footer-email-link'>{'kimsb000616@gmail.com'}</div>
                     <div className='icon-button'>
                         <div className='icon insta-icon' onClick={onInstaIconButtonClickHandler}></div>
                     </div>
