@@ -10,7 +10,7 @@ interface Props {
     onChange: (event: ChangeEvent<HTMLInputElement>) => void;
     error: boolean;
 
-    icon?: 'eye-light-off-icon' | 'eye-light-on-icon' | 'expand-right-light-icon';
+    icon?: 'eye-light-off-icon' | 'eye-light-on-icon' | 'expand-right-light-icon' | 'check-icon' | 'check-green-icon';
     onButtonClick?: () => void;
 
     message?: string;

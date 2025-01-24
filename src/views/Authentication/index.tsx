@@ -3,11 +3,12 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import InputBox from "../../components/InputBox";
 import './style.css';
-import { SignInResponseDto } from "../../apis/response/auth";
+import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignInResponseDto, SignUpResponseDto } from "../../apis/response/auth";
 import ResponseDto from "../../apis/response/Response.dto";
 import { MAIN_PATH } from "../../constant";
-import { signInRequest, signUpRequest } from "../../apis";
-import { SignInRequestDto, SignUpRequestDto } from "../../apis/request/auth";
+import { checkCertificationRequest, emailCertificationRequest, idCheckRequest, signInRequest, signUpRequest } from "../../apis";
+import { CheckCertificationRequestDto, EmailCertificationRequestDto, SignInRequestDto, SignUpRequestDto } from "../../apis/request/auth";
+import idCheckRequestDto from "../../apis/request/auth/id-check.request.dto";
 
 // component: 인증 화면 컴포넌트 //
 export default function Authentication() {
@@ -163,7 +164,7 @@ export default function Authentication() {
         const emailRef = useRef<HTMLInputElement | null>(null);
 
         // state: 이메일 인증 번호 참조 상태 //
-        const certificationNumberRef = useRef<HTMLInputElement | null>(null);
+        const checkCertificationRef = useRef<HTMLInputElement | null>(null);
     
         // state: 약관 동의 요소 참조 상태 //
         const agreedPersonalRef = useRef<HTMLInputElement | null>(null);
@@ -173,6 +174,9 @@ export default function Authentication() {
 
         // state: 아이디 상태 //
         const [loginId, setLoginId] = useState<string>('');
+
+        // state: 아이디 중복 확인 상태 //
+        const [loginIdChecked, setLoginIdChecked] = useState<boolean>(false);
     
         // state: 패스워드 상태 //
         const [password, setPassword] = useState<string>('');
@@ -186,8 +190,11 @@ export default function Authentication() {
         // state: 이메일 상태 //
         const [email, setEmail] = useState<string>('');
 
+        // state: 이메일 인증 전송 상태 //
+        const [emailCertification, setEmailCertification] = useState<string>('');
+
         // state: 이메일 인증 번호 상태 //
-        const [certificationNumber, setCertificationNumber] = useState<string>('');
+        const [checkCertification, setCheckCertification] = useState<string>('');
     
         // state: 약관 동의 상태 //
         const [agreedPersonal, setAgreedPersonal] = useState<boolean>(false);
@@ -200,7 +207,7 @@ export default function Authentication() {
 
         // state: 아이디 에러 상태 //
         const [isLoginIdError, setLoginIdError] = useState<boolean>(false);
-    
+
         // state: 패스워드 에러 상태 //
         const [isPasswordError, setPasswordError] = useState<boolean>(false);
     
@@ -209,6 +216,9 @@ export default function Authentication() {
 
         // state: 이메일 에러 상태 //
         const [isEmailError, setEmailError] = useState<boolean>(false);
+
+        // state: 이메일 인증 전송 에러 상태 //
+        const [isEmailCertificationError, setEmailCertificationError] = useState<boolean>(false);
 
         // state: 이메일 인증 번호 에러 상태 //
         const [isCertificationNumberError, setCertificationNumberError] = useState<boolean>(false);
@@ -236,16 +246,109 @@ export default function Authentication() {
     
         // state: 닉네임 에러 메세지 상태 //
         const [nicknameErrorMessage, setNicknameErrorMessage] = useState<string>('');
+
+        // state: 아이디 중복 확인 버튼 아이콘 상태 //
+        const [loginIdCheckedButtonIcon, setLoginIdCheckedButtonIcon] = useState<'check-icon' | 'check-green-icon'>('check-icon');
     
         // state: 패스워드 버튼 아이콘 상태 //
         const [passwordButtonIcon, setPasswordButtonIcon] = useState<'eye-light-off-icon' | 'eye-light-on-icon'>('eye-light-off-icon');
     
         // state: 패스워드 확인 버튼 아이콘 상태 //
         const [passwordCheckButtonIcon, setPasswordCheckButtonIcon] = useState<'eye-light-off-icon' | 'eye-light-on-icon'>('eye-light-off-icon');
+
+        // state: 이메일 인증 전송 버튼 아이콘 상태 //
+        const [emailCertificationButtonIcon, setEmailCertificationButtonIcon] = useState<'check-icon' | 'check-green-icon'>('check-icon');
+
+        // state: 이메일 인증 확인 버튼 아이콘 상태 //
+        const [checkCertificationButtonIcon, setCheckedCertificationButtonIcon] = useState<'check-icon' | 'check-green-icon'>('check-icon');
     
+        // function: id check response 처리 함수 //
+        const loginIdCheckResponse = (responseBody: IdCheckResponseDto| ResponseDto | null) => {
+            if(!responseBody){
+                alert("네트워크 이상입니다.");
+                return;
+            } 
+            const{code} = responseBody;
+            if(code === "DBE"){
+                alert("데이터베이스 오류입니다.");
+            }
+            if(code !== "SU"){
+                alert("중복된 아이디입니다.");
+                setLoginIdCheckedButtonIcon('check-icon');
+                setLoginIdChecked(false);
+                return;
+            };
+
+            setLoginIdCheckedButtonIcon('check-green-icon');
+            setLoginIdChecked(true);
+
+        }
+
+        // function: email certification response 처리 함수 //
+        const emailCertificationResponse = (responseBody: EmailCertificationResponseDto | ResponseDto | null) => {
+            if(!responseBody){
+                alert("네트워크 이상입니다.");
+                return;
+            } 
+            const{code} = responseBody;
+            if(code === "DBE"){
+                alert("데이터베이스 오류입니다.");
+            }
+            if(code !== "SU"){
+                alert("잘못된 값입니다");
+                if(checkCertificationButtonIcon === 'check-green-icon'){
+                    setCheckedCertificationButtonIcon('check-icon');
+                    setCertificationNumberError(true);
+                    setCertificationNumberErrorMessage("잘못된 값입니다.");
+                }
+            };
+
+            setCheckedCertificationButtonIcon('check-green-icon');
+        }
+
+        // function: check certification response 처리 함수 //
+        const checkCertificationResponse = (responseBody: CheckCertificationResponseDto | ResponseDto | null) => {
+            if(!responseBody){
+                alert("네트워크 이상입니다.");
+                return;
+            } 
+            const{code} = responseBody;
+            if(code === "DBE"){
+                alert("데이터베이스 오류입니다.");
+            }
+            if(code !== "SU"){
+                alert("잘못된 값입니다");
+                if(checkCertificationButtonIcon === 'check-green-icon'){
+                    setCheckedCertificationButtonIcon('check-icon');
+                    setCertificationNumberError(true);
+                    setCertificationNumberErrorMessage("잘못된 값입니다.");
+                }
+            };
+
+            setCheckedCertificationButtonIcon('check-green-icon');
+        }
     
         // function: sign up response 처리 함수 //
-        const signUpResponse = () => {
+        const signUpResponse = (responseBody: SignUpResponseDto | ResponseDto | null) => {
+            if(!responseBody){
+                alert("네트워크 이상입니다.");
+                return;
+            } 
+            const{code} = responseBody;
+        
+            if(code === "DE"){
+                setEmailError(true);
+                setEmailErrorMessage("중복되는 이메일 주소입니다.");
+            }
+            if(code === "VF"){
+                alert("모든 값을 입력하세요.");
+            }
+            if(code === "DBE"){
+                alert("데이터베이스 오류입니다.");
+            }
+        
+            if(code !== "SU")return;
+        
             setView('sign-in');
         }
 
@@ -284,7 +387,7 @@ export default function Authentication() {
         // event handler: 이메일 인증 번호 변경 이벤트 처리 //
         const onCertificationNumberChangeHandler = (event:ChangeEvent<HTMLInputElement>) =>{
             const {value} = event.target;
-            setCertificationNumber(value);
+            setCheckCertification(value);
             setCertificationNumberError(false);
             setCertificationNumberErrorMessage('');
         }
@@ -317,14 +420,37 @@ export default function Authentication() {
         // event handler: 패스워드 확인 버튼 클릭 이벤트 처리 //
         const onPasswordCheckButtonClickHandler =()=>{
             if(passwordCheckButtonIcon === 'eye-light-off-icon'){
-            setPasswordCheckButtonIcon('eye-light-on-icon');
-            setPasswordCheckType('text');
+                setPasswordCheckButtonIcon('eye-light-on-icon');
+                setPasswordCheckType('text');
             }else{
-            setPasswordCheckButtonIcon('eye-light-off-icon');
-            setPasswordCheckType('password');
+                setPasswordCheckButtonIcon('eye-light-off-icon');
+                setPasswordCheckType('password');
             }
         }
-    
+
+        // event handler: 아이디 중복 확인 버튼 클릭 이벤트 처리 //
+        const onLoginIdCheckButtonClickHandler =()=>{
+            const requestBody: idCheckRequestDto = {
+                loginId
+            }
+            idCheckRequest(requestBody).then(loginIdCheckResponse);
+        }
+
+        // event handler: 이메일 인증 전송 확인 버튼 클릭 이벤트 처리 //
+        const onEmailCertificationButtonClickHandler =()=>{
+            const requestBody: EmailCertificationRequestDto = {
+                loginId, email
+            }
+            emailCertificationRequest(requestBody).then(emailCertificationResponse);
+        }
+
+        // event handler: 이메일 인증 번호 확인 버튼 클릭 이벤트 처리 //
+        const onCheckCertificationButtonClickHandler =()=>{
+            const requestBody: CheckCertificationRequestDto = {
+                loginId, email, certificationNumber: checkCertification
+            }
+            checkCertificationRequest(requestBody).then(checkCertificationResponse);
+        }
     
         // event handler: 다음 버튼 클릭 이벤트 처리 //
         const onNextButtonClickHandler=()=>{
@@ -394,7 +520,7 @@ export default function Authentication() {
             if(!hasNickname || !agreedPersonal) return;
 
             const requestBody: SignUpRequestDto = {
-                loginId, password, email, nickname, certificationNumber, agreedPersonal
+                loginId, password, email, nickname, certificationNumber: checkCertification, agreedPersonal
             }
 
             signUpRequest(requestBody).then(signUpResponse);
@@ -429,12 +555,12 @@ export default function Authentication() {
         // event handler: 이메일 키 다운 이벤트 처리 //
         const onEmailKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>)=>{
             if(event.key !== 'Enter') return;
-            if(!certificationNumberRef.current) return;
-            certificationNumberRef.current.focus();
+            if(!checkCertificationRef.current) return;
+            checkCertificationRef.current.focus();
         }
 
         // event handler: 이메일 인증 번호 키 다운 이벤트 처리 //
-        const onCertificationNumberKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>)=>{
+        const onCheckCertificationKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>)=>{
             if(event.key !== 'Enter') return;
             if(!nicknameRef.current) return;
             nicknameRef.current.focus();
@@ -465,15 +591,15 @@ export default function Authentication() {
                 </div>
                 {page === 1 && (
                     <>
-                    <InputBox ref={loginIdRef} label='아이디*' type='text' placeholder='아이디를 입력해주세요.' value={loginId} onChange={onLoginIdChangeHandler} error={isLoginIdError} message={loginIdErrorMessage} onKeyDown={onLoginIdKeyDownHandler}/>
+                    <InputBox ref={loginIdRef} label='아이디*' type='text' placeholder='아이디를 입력해주세요.' value={loginId} onChange={onLoginIdChangeHandler} error={isLoginIdError} message={loginIdErrorMessage} icon={loginIdCheckedButtonIcon} onButtonClick={onLoginIdCheckButtonClickHandler} onKeyDown={onLoginIdKeyDownHandler}/>
                     <InputBox ref={passwordRef} label='비밀번호*' type={passwordType} placeholder='비밀번호를 입력해주세요.' value={password} onChange={onPasswordChangeHandler} error={isPasswordError} message={passwordErrorMessage} icon={passwordButtonIcon} onButtonClick={onPasswordButtonClickHandler} onKeyDown={onPasswordKeyDownHandler}/>
                     <InputBox ref={passwordCheckRef} label='비밀번호 확인*' type={passwordCheckType} placeholder='비밀번호를 다시 입력해주세요.' value={passwordCheck} onChange={onPasswordCheckChangeHandler} error={isPasswordCheckError} message={passwordCheckErrorMessage} icon={passwordCheckButtonIcon} onButtonClick={onPasswordCheckButtonClickHandler} onKeyDown={onPasswordCheckKeyDownHandler}/>
                     </>
                 )}
                 {page === 2 &&(
                     <>
-                    <InputBox ref={emailRef} label='이메일 주소*' type='text' placeholder='이메일 주소를 입력해주세요.' value={email} onChange={onEmailChangeHandler} error={isEmailError} message={emailErrorMessage} onKeyDown={onEmailKeyDownHandler}/>
-                    <InputBox ref={certificationNumberRef} label='이메일 인증 번호*' type='text' placeholder='이메일 인증 번호를 입력해주세요.' value={email} onChange={onCertificationNumberChangeHandler} error={isCertificationNumberError} message={certificationNumberErrorMessage} onKeyDown={onCertificationNumberKeyDownHandler}/>
+                    <InputBox ref={emailRef} label='이메일 주소*' type='text' placeholder='이메일 주소를 입력해주세요.' value={email} onChange={onEmailChangeHandler} error={isEmailError} message={emailErrorMessage} icon={emailCertificationButtonIcon} onButtonClick={onEmailCertificationButtonClickHandler} onKeyDown={onEmailKeyDownHandler}/>
+                    <InputBox ref={checkCertificationRef} label='이메일 인증 번호*' type='text' placeholder='이메일 인증 번호를 입력해주세요.' value={checkCertification} onChange={onCertificationNumberChangeHandler} error={isCertificationNumberError} icon={checkCertificationButtonIcon} onButtonClick={onCheckCertificationButtonClickHandler} message={certificationNumberErrorMessage} onKeyDown={onCheckCertificationKeyDownHandler}/>
                     <InputBox ref={nicknameRef} label='닉네임*' type='text' placeholder='닉네임을 입력해주세요.' value={nickname} onChange={onNicknameChangeHandler} error={isNicknameError} message={nicknameErrorMessage} onKeyDown={onNicknameKeyDownHandler}/>
                     </>
                 )}
