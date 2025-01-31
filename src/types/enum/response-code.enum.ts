@@ -6,11 +6,15 @@ export enum ResponseCode {
     VALIDATION_FAILED = "VF",
     DUPLICATE_EMAIL = "DE",
     DUPLICATE_NICKNAME = "DN",
+    DUPLICATE_ID = "DI",
     NOT_EXISTED_USER = "NU",
+    DISAGREED_PERSONAL = "DP",
 
     // HTTP Status 401
     SIGN_IN_FAIL = "SF",
     AUTHORIZATION_FAIL = "AF",
+    MAIL_FAIL = "MF",
+    CERTIFICATION_FAIL = "CF",
 
     // HTTP Status 403
     NO_PERMISSION = "NP",
