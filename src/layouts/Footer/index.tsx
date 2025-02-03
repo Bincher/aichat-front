@@ -21,7 +21,7 @@ export default function Footer() {
             <div className='footer-top'>
                 <div className='footer-logo-box'>
                     <div className='icon-box'>
-                        <div className='icon logo-chat-bot-icon'></div>
+                        <div className='icon chat-bot-icon'></div>
                     </div>
                     <div className='footer-logo-text'>{'CHAT with AI secretary'}</div>
                 </div>

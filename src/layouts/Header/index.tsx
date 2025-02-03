@@ -103,7 +103,7 @@ export default function Header() {
             <div className='header-container'>
                 <div className='header-left-box' onClick={onLogoClickHandler}>
                     <div className='icon-box'>
-                        <div className='icon logo-chat-bot-icon'></div>
+                        <div className='icon chat-bot-icon'></div>
                     </div>
                     <div className='header-logo'>{'CHAT with AI secretary'}</div>
                 </div>
