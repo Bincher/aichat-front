@@ -1,0 +1,61 @@
+/* Main.css */
+.main-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* 화면 전체 높이 */
+    background-color: #121212; /* 어두운 배경 */
+    color: #ffffff; /* 텍스트 색상 */
+  }
+  
+  .main-container {
+    text-align: center;
+  }
+  
+  .main-title {
+    font-size: 3rem; /* 큰 제목 크기 */
+    font-weight: bold;
+    margin-bottom: 1rem; /* 제목과 부제목 간격 */
+  }
+  
+  .subtitle {
+    font-size: 1.5rem; /* 부제목 크기 */
+    margin-bottom: 2rem; /* 부제목과 버튼 간격 */
+  }
+  
+  .startButton {
+    padding: 15px 30px;
+    font-size: 1.25rem; /* 버튼 텍스트 크기 */
+    font-weight: bold;
+    color: #ffffff; /* 버튼 텍스트 색상 */
+    background-color: #6200ea; /* 보라색 버튼 배경 */
+    border: none;
+    border-radius: 8px; /* 둥근 모서리 */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* 부드러운 전환 효과 */
+  }
+  
+  .startButton:hover {
+    background-color: #3700b3; /* 호버 시 더 어두운 보라색 */
+  }
+  
+  .startButton:active {
+    transform: scale(0.95); /* 클릭 시 살짝 축소 효과 */
+  }
+  
+  /* 반응형 디자인 */
+  @media (max-width: 768px) {
+      .main-title {
+          font-size: 2.5rem; /* 작은 화면에서 제목 크기 축소 */
+      }
+  
+      .subtitle {
+          font-size: 1.25rem; /* 작은 화면에서 부제목 크기 축소 */
+      }
+  
+      .startButton {
+          padding: 12px 24px; /* 작은 화면에서 버튼 크기 축소 */
+          font-size: 1rem;
+      }
+  }
+  

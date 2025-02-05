@@ -5,7 +5,7 @@ import InputBox from "../../components/InputBox";
 import './style.css';
 import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignInResponseDto, SignUpResponseDto } from "../../apis/response/auth";
 import ResponseDto from "../../apis/response/Response.dto";
-import { MAIN_PATH } from "../../constant";
+import { MAIN_PATH, MY_CHAT_PATH } from "../../constant";
 import { checkCertificationRequest, emailCertificationRequest, idCheckRequest, signInRequest, signUpRequest } from "../../apis";
 import { CheckCertificationRequestDto, EmailCertificationRequestDto, SignInRequestDto, SignUpRequestDto } from "../../apis/request/auth";
 import idCheckRequestDto from "../../apis/request/auth/id-check.request.dto";
@@ -62,7 +62,7 @@ export default function Authentication() {
             const expires = new Date(now + expirationTime * 1000);
         
             setCookie('accessToken', token, {expires, path: MAIN_PATH()});
-            navigate(MAIN_PATH());
+            navigate(MY_CHAT_PATH());
         }
     
         // event handler: 아이디 변경 이벤트 처리 //
