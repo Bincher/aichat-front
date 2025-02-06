@@ -17,3 +17,4 @@
 - 아이콘 출처
 
     - <a href="https://www.flaticon.com/free-icons/chatbot" title="chatbot icons">Chatbot icons created by FACH - Flaticon</a>
+    - <a href="https://www.flaticon.com/free-icons/username" title="username icons">Username icons created by espresso - Flaticon</a>

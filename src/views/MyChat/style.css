@@ -1,61 +1,107 @@
-/* Main.css */
-.main-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* 화면 전체 높이 */
-    background-color: #121212; /* 어두운 배경 */
-    color: #ffffff; /* 텍스트 색상 */
-  }
-  
-  .main-container {
-    text-align: center;
-  }
-  
-  .main-title {
-    font-size: 3rem; /* 큰 제목 크기 */
-    font-weight: bold;
-    margin-bottom: 1rem; /* 제목과 부제목 간격 */
-  }
-  
-  .subtitle {
-    font-size: 1.5rem; /* 부제목 크기 */
-    margin-bottom: 2rem; /* 부제목과 버튼 간격 */
-  }
-  
-  .startButton {
-    padding: 15px 30px;
-    font-size: 1.25rem; /* 버튼 텍스트 크기 */
-    font-weight: bold;
-    color: #ffffff; /* 버튼 텍스트 색상 */
-    background-color: #6200ea; /* 보라색 버튼 배경 */
-    border: none;
-    border-radius: 8px; /* 둥근 모서리 */
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease; /* 부드러운 전환 효과 */
-  }
-  
-  .startButton:hover {
-    background-color: #3700b3; /* 호버 시 더 어두운 보라색 */
-  }
-  
-  .startButton:active {
-    transform: scale(0.95); /* 클릭 시 살짝 축소 효과 */
-  }
-  
-  /* 반응형 디자인 */
-  @media (max-width: 768px) {
-      .main-title {
-          font-size: 2.5rem; /* 작은 화면에서 제목 크기 축소 */
-      }
-  
-      .subtitle {
-          font-size: 1.25rem; /* 작은 화면에서 부제목 크기 축소 */
-      }
-  
-      .startButton {
-          padding: 12px 24px; /* 작은 화면에서 버튼 크기 축소 */
-          font-size: 1rem;
-      }
-  }
-  
+/* MyChat 페이지 전체 스타일 */
+.my-chat-wrapper {
+  padding: 20px;
+  background-color: #f9f9f9; /* 밝은 배경 */
+  min-height: 100vh;
+}
+
+/* 헤더 스타일 */
+.my-chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.my-chat-header-left,
+.my-chat-header-right {
+  display: flex;
+  gap: 10px; /* 버튼 간격 */
+}
+
+.chat-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #ffffff; /* 흰색 텍스트 */
+  background-color: #6200ea; /* 보라색 배경 */
+  border: none;
+  border-radius: 5px; /* 둥근 모서리 */
+  cursor: pointer;
+}
+
+.chat-button:hover {
+  background-color: #3700b3; /* 호버 시 더 어두운 보라색 */
+}
+
+/* 채팅방 카드 스타일 */
+.my-chat-body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* 카드 간격 */
+}
+
+.chat-card {
+  padding: 15px;
+  background-color: #ffffff; /* 흰색 카드 배경 */
+  border-radius: 8px; /* 둥근 모서리 */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* 카드 그림자 */
+}
+
+.chat-card h3 {
+  margin-bottom: 10px;
+}
+
+.chat-card ul {
+  list-style-type: none; /* 리스트 스타일 제거 */
+  padding-left: 0;
+}
+
+.chat-card li {
+  margin-bottom: 5px;
+}
+
+/* 유저 정보 컨테이너 */
+.user-info {
+  display: inline-flex; /* 아이콘과 닉네임을 나란히 배치 */
+  align-items: center;
+  margin-right: 10px; /* 유저 간 간격 */
+}
+
+/* 유저 아이콘 스타일 */
+.user-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%; /* 원형 아이콘 */
+  margin-right: 5px; /* 아이콘과 닉네임 간격 */
+}
+
+/* 기본 프로필 아이콘 스타일 */
+.icon-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%; /* 원형 아이콘 */
+  margin-right: 5px; /* 아이콘과 닉네임 간격 */
+}
+
+.default-profile-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* 닉네임 스타일 */
+.user-nickname {
+  font-size: 0.9rem;
+  color: #333; /* 텍스트 색상 */
+}
+
+/* 구분자 스타일 ('/' 표시) */
+.separator {
+  margin-left: 5px;
+  margin-right: 5px;
+  color: #999; /* 구분자 색상 */
+}
+

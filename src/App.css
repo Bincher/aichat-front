@@ -349,3 +349,7 @@
 .chat-bot-icon{
   background-image: url(assets/image/chatbot.png);
 }
+
+.default-profile-icon{
+  background-image: url(assets/image/user-avatar.png);
+}
