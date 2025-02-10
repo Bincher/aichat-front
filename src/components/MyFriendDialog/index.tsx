@@ -5,11 +5,16 @@ import { GetMyFriendResponseDto, GetUserListResponseDto } from "../../apis/respo
 import { ResponseDto } from "../../apis/response";
 import { useCookies } from "react-cookie";
 import { UserList } from "../../types/interface";
+import InviteDialog from "../InviteDialog";
 
 export default function MyFriendDialog({ onClose }: { onClose: () => void }) {
+
     // state: 쿠키 상태 //
     const [cookies, setCookies] = useCookies();
     const [myFriends, setMyFriends] = useState<UserList[]>([]); // 검색 결과 상태
+
+    // state: 친구 추가 다이얼로그 표시 상태 //
+    const [showInviteDialog, setShowInviteDialog] = useState<boolean>(false);
 
     // function: 서버 응답 처리 함수 //
     const getMyFriendResponse = (responseBody: GetMyFriendResponseDto | ResponseDto | null) => {
@@ -25,10 +30,16 @@ export default function MyFriendDialog({ onClose }: { onClose: () => void }) {
             return;
         }
 
-        const { userList } = responseBody as GetUserListResponseDto;
-        setMyFriends(userList || []);
+        const { friends } = responseBody as GetMyFriendResponseDto;
+        console.log("Parsed userList:", friends);
+        setMyFriends(friends || []); // 상태 업데이트
         
     };
+
+    // event handler: 아이디 변경 이벤트 처리 //
+    const onInviteButtonClickHandler =()=>{
+        setShowInviteDialog(true);
+    }
 
     // effect: 마운트 시 실행할 함수 //
     useEffect(() => {
@@ -38,38 +49,49 @@ export default function MyFriendDialog({ onClose }: { onClose: () => void }) {
             return;
         }
 
-        getMyFriendRequest(accessToken).then(getMyFriendResponse);
+        getMyFriendRequest(accessToken).then((responseBody) => {
+            console.log("API Response:", responseBody); // 서버 응답 출력
+            getMyFriendResponse(responseBody);
+        });
     }, [cookies.accessToken]);
 
     return (
         <div className="dialog-overlay">
-        <div className="dialog">
-            <div className="dialog-header">
-            <h2>나의 친구 목록</h2>
-            <button className="close-button" onClick={onClose}>
-                ✕
-            </button>
-            </div>
-            <div className="dialog-body">
-                <div className="friend-results">
-                {myFriends.map((user, index) => (
-                    <div key={index} className="user-card">
-                        {user.profileImage ? (
-                            <img src={user.profileImage} alt={`${user.nickname} 프로필`} className="user-icon" />
-                        ) : (
-                            <div className="icon-box">
-                                <div className="icon default-profile-icon"></div>
-                            </div>
-                        )}
-                        <span className="user-nickname">{user.nickname}</span>
+            <div className="dialog">
+                <div className="dialog-header">
+                <h2>나의 친구 목록</h2>
+                
+                <button className="close-button" onClick={onClose}>
+                    ✕
+                </button>
+                </div>
+                <button className="request-button" onClick={onInviteButtonClickHandler}>
+                    요청 목록 보기
+                </button>
+                <div className="dialog-body">
+                    <div className="friend-results">
+                    {myFriends.map((user, index) => (
+                        <div key={index} className="user-card">
+                            {user.profileImage ? (
+                                <img src={user.profileImage} alt={`${user.nickname} 프로필`} className="user-icon" />
+                            ) : (
+                                <div className="icon-box">
+                                    <div className="icon default-profile-icon"></div>
+                                </div>
+                            )}
+                            <span className="user-nickname">{user.nickname}</span>
+                        </div>
+                    ))}
+                    {myFriends.length === 0 && (
+                        <p>친구가 없습니다.</p>
+                    )}
                     </div>
-                ))}
-                {myFriends.length === 0 && (
-                    <p>친구가 없습니다.</p>
-                )}
                 </div>
             </div>
+            {showInviteDialog && (
+                <InviteDialog onClose={() => setShowInviteDialog(false)} />
+            )}
         </div>
-        </div>
+        
     );
 }
