@@ -3,6 +3,8 @@ import { CheckCertificationRequestDto, EmailCertificationRequestDto, IdCheckRequ
 import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignInResponseDto, SignUpResponseDto } from "./response/auth";
 import ResponseDto from "./response/Response.dto";
 import GetChatRoomListResponseDto from "./response/auth/get-chat-room-list.response.dto";
+import { GetUserListResponseDto } from "./response/user";
+import { GetUserListRequestDto } from "./request/user";
 
 const DOMAIN = 'http://localhost:8090';
 
@@ -18,6 +20,7 @@ const CHECK_CERTIFICATION_URL =()=> `${API_DOMAIN}/auth/check-certification`;
 const SIGN_IN_URL =()=> `${API_DOMAIN}/auth/sign-in`;
 const SIGN_UP_URL =()=> `${API_DOMAIN}/auth/sign-up`;
 const GET_CHAT_ROOM_LIST_URL =()=> `${API_DOMAIN}/chat/chat-room`;
+const GET_USER_LIST_URL =()=> `${API_DOMAIN}/user/nickname`;
 
 export const idCheckRequest = async (requestBody: IdCheckRequestDto)=>{
     const result = await axios.post(ID_CHECK_URL(), requestBody)
@@ -93,6 +96,20 @@ export const getChatRoomListRequest = async (accessToken: string) =>{
     const result = await axios.get(GET_CHAT_ROOM_LIST_URL(), authorization(accessToken))
         .then(response => {
             const responseBody: GetChatRoomListResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error =>{
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+
+export const getUserListRequest = async (accessToken: string, requestBody: GetUserListRequestDto) =>{
+    const result = await axios.post(GET_USER_LIST_URL(), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: GetUserListResponseDto = response.data;
             return responseBody;
         })
         .catch(error =>{
