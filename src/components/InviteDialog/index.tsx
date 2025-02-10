@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, KeyboardEvent, useEffect } from "react";
-import { getInviteFriendRequest, getMyFriendRequest, getUserListRequest, postFriendRequest } from "../../apis"; // API 요청 함수
+import { getInviteFriendRequest, getMyFriendRequest, getUserListRequest, patchFriendRequest, postFriendRequest } from "../../apis"; // API 요청 함수
 import "./style.css"; // 스타일 파일
-import { GetInviteFriendResponseDto, GetMyFriendResponseDto, GetUserListResponseDto } from "../../apis/response/user";
+import { GetInviteFriendResponseDto, GetMyFriendResponseDto, GetUserListResponseDto, PatchFriendResponseDto } from "../../apis/response/user";
 import { ResponseDto } from "../../apis/response";
 import { useCookies } from "react-cookie";
 import { UserList } from "../../types/interface";
@@ -10,6 +10,7 @@ export default function InviteDialog({ onClose }: { onClose: () => void }) {
     // state: 쿠키 상태 //
     const [cookies] = useCookies();
     const [myUsers, setMyUsers] = useState<UserList[]>([]); // 요청 목록 상태
+    const [isAccept, setIsAccept] = useState<boolean>(false);
 
     // function: 서버 응답 처리 함수 //
     const getInviteFriendResponse = (responseBody: GetInviteFriendResponseDto | ResponseDto | null) => {
@@ -21,7 +22,7 @@ export default function InviteDialog({ onClose }: { onClose: () => void }) {
             return;
         }
         if (code !== "SU") {
-            alert("검색 중 오류가 발생했습니다.");
+            alert("오류가 발생했습니다. 다시 시도해주세요");
             return;
         }
 
@@ -29,16 +30,66 @@ export default function InviteDialog({ onClose }: { onClose: () => void }) {
         setMyUsers(friends || []);
     };
 
+    // function: 서버 응답 처리 함수 //
+    const patchFriendResponse = (responseBody: PatchFriendResponseDto | ResponseDto | null, friendAccept: boolean) => {
+        if (!responseBody) return;
+        const { code } = responseBody;
+
+        if (code === "NU") {
+            alert("해당 사용자의 정보를 불려올 수 없습니다.");
+            return;
+        }
+        if (code !== "SU") {
+            alert("오류가 발생했습니다. 다시 시도해주세요.");
+            return;
+        }
+
+        if (friendAccept) {
+            alert("수락되었습니다.");
+        } else {
+            alert("거절되었습니다.");
+        }
+    };
+
     // event handler: 수락 버튼 클릭 //
-    const onAcceptClickHandler = (nickname: string) => {
-        alert(`${nickname}님의 요청을 수락했습니다.`);
-        // TODO: 수락 API 호출 로직 추가
+    const onAcceptButtonClickHandler = (userNickname: string) => {
+        if (!userNickname.trim()) return;
+
+        const accessToken = cookies.accessToken;
+        if (!accessToken){
+            alert("인증 과정에서 문제가 발생하였습니다.");
+            return;
+        }
+
+        setIsAccept(true);
+        const requestBody = {
+            nickname: userNickname,
+            friendAccept: true
+        }
+        console.log(requestBody);
+        patchFriendRequest(accessToken, requestBody).then((response) =>
+            patchFriendResponse(response, true)
+        );
     };
 
     // event handler: 거절 버튼 클릭 //
-    const onRejectClickHandler = (nickname: string) => {
-        alert(`${nickname}님의 요청을 거절했습니다.`);
-        // TODO: 거절 API 호출 로직 추가
+    const onRejectButtonClickHandler = async (userNickname: string) => {
+        if (!userNickname.trim()) return;
+
+        const accessToken = cookies.accessToken;
+        if (!accessToken){
+            alert("인증 과정에서 문제가 발생하였습니다.");
+            return;
+        }
+
+        setIsAccept(false);
+        const requestBody = {
+            nickname: userNickname,
+            friendAccept: false
+        }
+        patchFriendRequest(accessToken, requestBody).then((response) =>
+            patchFriendResponse(response, false)
+        );
     };
 
     // effect: 마운트 시 실행할 함수 //
@@ -76,13 +127,13 @@ export default function InviteDialog({ onClose }: { onClose: () => void }) {
                                 <div className="action-buttons">
                                     <button
                                         className="accept-button"
-                                        onClick={() => onAcceptClickHandler(user.nickname)}
+                                        onClick={() => onAcceptButtonClickHandler(user.nickname)}
                                     >
                                         수락
                                     </button>
                                     <button
                                         className="reject-button"
-                                        onClick={() => onRejectClickHandler(user.nickname)}
+                                        onClick={() => onRejectButtonClickHandler(user.nickname)}
                                     >
                                         거절
                                     </button>

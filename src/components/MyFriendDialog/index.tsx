@@ -49,10 +49,7 @@ export default function MyFriendDialog({ onClose }: { onClose: () => void }) {
             return;
         }
 
-        getMyFriendRequest(accessToken).then((responseBody) => {
-            console.log("API Response:", responseBody); // 서버 응답 출력
-            getMyFriendResponse(responseBody);
-        });
+        getMyFriendRequest(accessToken).then(getMyFriendResponse);
     }, [cookies.accessToken]);
 
     return (
