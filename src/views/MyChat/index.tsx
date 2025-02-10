@@ -8,6 +8,7 @@ import GetChatRoomListResponseDto from "../../apis/response/auth/get-chat-room-l
 import { ResponseDto } from "../../apis/response";
 import './style.css';
 import AddFriendDialog from "../../components/FriendDialog";
+import MyFriendDialog from "../../components/MyFriendDialog";
 
 // component: 메인 화면 컴포넌트 //
 export default function MyChat() {
@@ -23,8 +24,11 @@ export default function MyChat() {
     // state: 채팅방 목록 상태 //
     const [chatRooms, setChatRooms] = useState<GetChatRoomListResponseDto["chatRooms"]>([]);
 
-    // state: 다이얼로그 표시 상태 //
+    // state: 친구 추가 다이얼로그 표시 상태 //
     const [showAddFriendDialog, setShowAddFriendDialog] = useState<boolean>(false);
+
+    // state: 친구 목록 다이얼로그 표시 상태 //
+    const [showMyFriendDialog, setShowMyFriendDialog] = useState<boolean>(false);
 
     // function: 서버 응답 처리 함수 //
     const getChatRoomListResponse = (responseBody: GetChatRoomListResponseDto | ResponseDto | null) => {
@@ -66,6 +70,10 @@ export default function MyChat() {
         setShowAddFriendDialog(true);
     };
 
+    const onMyFriendClick = () => {
+        setShowMyFriendDialog(true);
+    };
+
     const onDeleteChatClick = () => {
         alert("채팅 삭제 기능은 준비 중입니다.");
     };
@@ -79,6 +87,9 @@ export default function MyChat() {
                     </button>
                     <button className="chat-button" onClick={onAddFriendClick}>
                         친구 추가
+                    </button>
+                    <button className="chat-button" onClick={onMyFriendClick}>
+                        친구 목록
                     </button>
                 </div>
                 <div className="my-chat-header-right">
@@ -112,6 +123,9 @@ export default function MyChat() {
             </div>
             {showAddFriendDialog && (
                 <AddFriendDialog onClose={() => setShowAddFriendDialog(false)} />
+            )}
+            {showMyFriendDialog && (
+                <MyFriendDialog onClose={() => setShowMyFriendDialog(false)} />
             )}
         </div>
     );

@@ -3,7 +3,7 @@ import { CheckCertificationRequestDto, EmailCertificationRequestDto, IdCheckRequ
 import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignInResponseDto, SignUpResponseDto } from "./response/auth";
 import ResponseDto from "./response/Response.dto";
 import GetChatRoomListResponseDto from "./response/auth/get-chat-room-list.response.dto";
-import { GetUserListResponseDto } from "./response/user";
+import { GetMyFriendResponseDto, GetUserListResponseDto } from "./response/user";
 import { GetUserListRequestDto, PostFriendRequestDto } from "./request/user";
 import PostFriendResponseDto from "./response/user/post-friend.response.dto";
 
@@ -23,6 +23,7 @@ const SIGN_UP_URL =()=> `${API_DOMAIN}/auth/sign-up`;
 const GET_CHAT_ROOM_LIST_URL =()=> `${API_DOMAIN}/chat/chat-room`;
 const GET_USER_LIST_URL =()=> `${API_DOMAIN}/user/nickname`;
 const POST_FRIEND_URL =()=> `${API_DOMAIN}/user/friend/send`;
+const GET_MY_FRIEND_URL =()=> `${API_DOMAIN}/user/friend`;
 
 export const idCheckRequest = async (requestBody: IdCheckRequestDto)=>{
     const result = await axios.post(ID_CHECK_URL(), requestBody)
@@ -126,6 +127,20 @@ export const postFriendRequest = async (accessToken: string, requestBody: PostFr
     const result = await axios.post(POST_FRIEND_URL(), requestBody, authorization(accessToken))
         .then(response => {
             const responseBody: PostFriendResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error =>{
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+
+export const getMyFriendRequest = async (accessToken: string) =>{
+    const result = await axios.get(GET_MY_FRIEND_URL(), authorization(accessToken))
+        .then(response => {
+            const responseBody: GetMyFriendResponseDto = response.data;
             return responseBody;
         })
         .catch(error =>{
