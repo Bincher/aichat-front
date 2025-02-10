@@ -9,6 +9,8 @@ export enum ResponseCode {
     DUPLICATE_ID = "DI",
     NOT_EXISTED_USER = "NU",
     DISAGREED_PERSONAL = "DP",
+    EXISTED_FRIEND = "EF",
+    DUPLICATE_POSTING = "DU",
 
     // HTTP Status 401
     SIGN_IN_FAIL = "SF",
