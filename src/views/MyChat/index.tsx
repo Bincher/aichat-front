@@ -15,8 +15,8 @@ export default function MyChat() {
 
     const navigate = useNavigate();
 
-    // state: 로그인 유저 상태 //
-    const { loginUser } = useLoginUserStore();
+    // // state: 로그인 유저 상태 //
+    // const { loginUser } = useLoginUserStore();
 
     // state: 쿠키 상태 //
     const [cookies, setCookies] = useCookies();
@@ -54,6 +54,7 @@ export default function MyChat() {
     useEffect(() => {
         const accessToken = cookies.accessToken;
         if (!accessToken){
+            alert("서비스를 이용하시려면 로그인이 필요합니다.");
             navigate(MAIN_PATH());
             return;
         }
@@ -61,23 +62,27 @@ export default function MyChat() {
         getChatRoomListRequest(accessToken).then(getChatRoomListResponse);
     }, [cookies.accessToken]);
 
-    // event handler: 버튼 클릭 이벤트 처리 //
+    // event handler: 채팅창 만들기 버튼 클릭 이벤트 처리 //
     const onCreateChatClick = () => {
         alert("채팅방 만들기 기능은 준비 중입니다.");
     };
 
+    // event handler: 친구 추가 버튼 클릭 이벤트 처리 //
     const onAddFriendClick = () => {
         setShowAddFriendDialog(true);
     };
 
+    // event handler: 친구 목록 버튼 클릭 이벤트 처리 //
     const onMyFriendClick = () => {
         setShowMyFriendDialog(true);
     };
 
+    // event handler: 채팅 삭제 버튼 클릭 이벤트 처리 //
     const onDeleteChatClick = () => {
         alert("채팅 삭제 기능은 준비 중입니다.");
     };
 
+    // render: mychat 페이지 렌더링 //
     return (
         <div className="my-chat-wrapper">
             <div className="my-chat-header">
