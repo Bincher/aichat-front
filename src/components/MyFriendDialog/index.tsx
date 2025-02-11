@@ -11,12 +11,14 @@ export default function MyFriendDialog({ onClose }: { onClose: () => void }) {
 
     // state: 쿠키 상태 //
     const [cookies, setCookies] = useCookies();
-    const [myFriends, setMyFriends] = useState<UserList[]>([]); // 검색 결과 상태
+
+    // state: 친구 검색 결과 목록 상태 //
+    const [myFriends, setMyFriends] = useState<UserList[]>([]);
 
     // state: 친구 추가 다이얼로그 표시 상태 //
     const [showInviteDialog, setShowInviteDialog] = useState<boolean>(false);
 
-    // function: 서버 응답 처리 함수 //
+    // function: getMyFriend 처리 함수 //
     const getMyFriendResponse = (responseBody: GetMyFriendResponseDto | ResponseDto | null) => {
         if (!responseBody) return;
         const { code } = responseBody;
@@ -52,6 +54,7 @@ export default function MyFriendDialog({ onClose }: { onClose: () => void }) {
         getMyFriendRequest(accessToken).then(getMyFriendResponse);
     }, [cookies.accessToken]);
 
+    // render: MyFriendDialog 친구 목록 다이얼로그 렌더링 //
     return (
         <div className="dialog-overlay">
             <div className="dialog">

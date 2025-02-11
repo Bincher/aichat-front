@@ -8,13 +8,20 @@ import { UserList } from "../../types/interface";
 import PostFriendResponseDto from "../../apis/response/friend/post-friend.response.dto";
 
 export default function AddFriendDialog({ onClose }: { onClose: () => void }) {
+
     // state: 쿠키 상태 //
     const [cookies, setCookies] = useCookies();
-    const [nickname, setNickname] = useState<string>(""); // 닉네임 입력 상태
-    const [searchResults, setSearchResults] = useState<UserList[]>([]); // 검색 결과 상태
-    const [loading, setLoading] = useState<boolean>(false); // 로딩 상태
 
-    // function: 서버 응답 처리 함수 //
+    // state: 검색한 닉네임 상태 //
+    const [nickname, setNickname] = useState<string>("");
+
+    // state: 검색한 유저 목록 상태 //
+    const [searchResults, setSearchResults] = useState<UserList[]>([]);
+
+    // state: 로딩 상태 //
+    const [loading, setLoading] = useState<boolean>(false);
+
+    // function: getUsetList 처리 함수 //
     const getUserListResponse = (responseBody: GetUserListResponseDto | ResponseDto | null) => {
         if (!responseBody) return;
         const { code } = responseBody;
@@ -28,20 +35,19 @@ export default function AddFriendDialog({ onClose }: { onClose: () => void }) {
             return;
         }
         if (code !== "SU") {
-            setLoading(false); // 로딩 종료
+            setLoading(false);
             alert("검색 중 오류가 발생했습니다.");
             return;
         }
 
-        // chatRooms 데이터 가져오기 및 상태 저장
         const { userList } = responseBody as GetUserListResponseDto;
         setSearchResults(userList);
 
-        setLoading(false); // 로딩 종료
+        setLoading(false);
         
     };
 
-    // function: 서버 응답 처리 함수 //
+    // function: postFriend 처리 함수 //
     const postFriendResponse = (responseBody: PostFriendResponseDto | ResponseDto | null) => {
         if (!responseBody) return;
         const { code } = responseBody;
@@ -63,7 +69,7 @@ export default function AddFriendDialog({ onClose }: { onClose: () => void }) {
             return;
         }
         if (code !== "SU") {
-            setLoading(false); // 로딩 종료
+            setLoading(false); 
             alert("검색 중 오류가 발생했습니다.");
             return;
         }
@@ -72,13 +78,13 @@ export default function AddFriendDialog({ onClose }: { onClose: () => void }) {
         
     };
 
-    // 이벤트 핸들러: 닉네임 입력 변경
+    // event handler: 닉네임 입력 변경 이벤트 처리 //
     const onNicknameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         setNickname(event.target.value);
     };
 
-    // 이벤트 핸들러: 검색 버튼 클릭 또는 엔터 키 입력
-    const onSearchHandler = async () => {
+    // event handler: 검색 버튼 클릭 또는 엔터 키 입력 이벤트 처리 //
+    const onSearchButtonClickHandler = async () => {
         if (!nickname.trim()) return; // 빈 입력 방지
         setLoading(true); // 로딩 시작
         const accessToken = cookies.accessToken;
@@ -91,11 +97,13 @@ export default function AddFriendDialog({ onClose }: { onClose: () => void }) {
         
     };
 
+    // event handler: 아랫키 입력 이벤트 처리 //
     const onKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === "Enter") onSearchHandler();
+        if (event.key === "Enter") onSearchButtonClickHandler();
     };
 
-    const onAddFriendClickHandler =(friendNickname: string)=>{
+    // event handler: 친구 추가 버튼 클릭 이벤트 처리 //
+    const onAddFriendButtonClickHandler =(friendNickname: string)=>{
         const accessToken = cookies.accessToken;
         if (!accessToken){
             alert("사용자 인증 과정에서 문제가 발생하였습니다. 재로그인 후 다시 시도해주세요");
@@ -105,6 +113,7 @@ export default function AddFriendDialog({ onClose }: { onClose: () => void }) {
         postFriendRequest(accessToken, requestBody).then(postFriendResponse);
     }
 
+    // render: 친구 추가 다디얼로그 렌더링 //
     return (
         <div className="dialog-overlay">
         <div className="dialog">
@@ -123,7 +132,7 @@ export default function AddFriendDialog({ onClose }: { onClose: () => void }) {
                 onChange={onNicknameChangeHandler}
                 onKeyDown={onKeyDownHandler}
                 />
-                <button className="search-button" onClick={onSearchHandler}>
+                <button className="search-button" onClick={onSearchButtonClickHandler}>
                 🔍
                 </button>
             </div>
@@ -143,7 +152,7 @@ export default function AddFriendDialog({ onClose }: { onClose: () => void }) {
                         <span className="user-nickname">{user.nickname}</span>
                         <button
                             className="invite-button"
-                            onClick={() => onAddFriendClickHandler(user.nickname)} // 해당 유저의 닉네임 전달
+                            onClick={() => onAddFriendButtonClickHandler(user.nickname)} // 해당 유저의 닉네임 전달
                         >
                             친구 초대 요청
                         </button>

@@ -1,4 +1,4 @@
-import { FriendUsers, UserList } from "../../../types/interface";
+import { UserList } from "../../../types/interface";
 import ResponseDto from "../Response.dto";
 
 export default interface GetUserListResponseDto extends ResponseDto{

@@ -7,11 +7,14 @@ import { useCookies } from "react-cookie";
 import { UserList } from "../../types/interface";
 
 export default function InviteDialog({ onClose }: { onClose: () => void }) {
+
     // state: 쿠키 상태 //
     const [cookies] = useCookies();
-    const [myUsers, setMyUsers] = useState<UserList[]>([]); // 요청 목록 상태
 
-    // function: 서버 응답 처리 함수 //
+    // state: 요청 목록 상태 //
+    const [myUsers, setMyUsers] = useState<UserList[]>([]);
+
+    // function: getInviteFriend(요청 목록) 처리 함수 //
     const getInviteFriendResponse = (responseBody: GetInviteFriendResponseDto | ResponseDto | null) => {
         if (!responseBody) return;
         const { code } = responseBody;
@@ -29,7 +32,7 @@ export default function InviteDialog({ onClose }: { onClose: () => void }) {
         setMyUsers(friends || []);
     };
 
-    // function: 서버 응답 처리 함수 //
+    // function: patchFriend(요청 수락 및 거절) 처리 함수 //
     const patchFriendResponse = (responseBody: PatchFriendResponseDto | ResponseDto | null, friendAccept: boolean) => {
         if (!responseBody) return;
         const { code } = responseBody;
@@ -50,7 +53,7 @@ export default function InviteDialog({ onClose }: { onClose: () => void }) {
         }
     };
 
-    // event handler: 수락 버튼 클릭 //
+    // event handler: 수락 버튼 클릭 이벤트 처리 //
     const onAcceptButtonClickHandler = (userNickname: string) => {
         if (!userNickname.trim()) return;
 
@@ -70,7 +73,7 @@ export default function InviteDialog({ onClose }: { onClose: () => void }) {
         );
     };
 
-    // event handler: 거절 버튼 클릭 //
+    // event handler: 거절 버튼 클릭 이벤트 처리 //
     const onRejectButtonClickHandler = async (userNickname: string) => {
         if (!userNickname.trim()) return;
 
@@ -100,6 +103,7 @@ export default function InviteDialog({ onClose }: { onClose: () => void }) {
         getInviteFriendRequest(accessToken).then(getInviteFriendResponse);
     }, [cookies.accessToken]);
 
+    // render: InviteDialog 요청 목록 렌더링 //
     return (
         <div className="dialog-overlay">
             <div className="dialog">
