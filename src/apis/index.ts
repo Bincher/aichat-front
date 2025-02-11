@@ -3,7 +3,7 @@ import { CheckCertificationRequestDto, EmailCertificationRequestDto, IdCheckRequ
 import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckResponseDto, SignInResponseDto, SignUpResponseDto } from "./response/auth";
 import ResponseDto from "./response/Response.dto";
 import GetChatRoomListResponseDto from "./response/auth/get-chat-room-list.response.dto";
-import { GetInviteFriendResponseDto, GetMyFriendResponseDto, GetUserListResponseDto, PatchFriendResponseDto } from "./response/friend";
+import { DeleteFriendResponseDto, GetInviteFriendResponseDto, GetMyFriendResponseDto, GetUserListResponseDto, PatchFriendResponseDto } from "./response/friend";
 import { PostFriendRequestDto } from "./request/friend";
 import PostFriendResponseDto from "./response/friend/post-friend.response.dto";
 import PatchFriendRequestDto from "./request/friend/patch-friend.response.dto";
@@ -28,7 +28,7 @@ const POST_FRIEND_URL =()=> `${API_DOMAIN}/friend/request`;
 const GET_MY_FRIEND_URL =()=> `${API_DOMAIN}/friend/myfriend`;
 const GET_INVITE_FRIEND_URL =()=> `${API_DOMAIN}/friend/invite`;
 const PATCH_FRIEND_URL =()=> `${API_DOMAIN}/friend/response`;
-const DELETE_FRIEND_URL =()=> `${API_DOMAIN}/friend/myfriend/drop`;
+const DELETE_FRIEND_URL =(nickname : String)=> `${API_DOMAIN}/friend/drop/${nickname}`;
 const GET_SIGN_IN_USER_URL =()=> `${API_DOMAIN}/user`;
 
 export const idCheckRequest = async (requestBody: IdCheckRequestDto)=>{
@@ -116,8 +116,9 @@ export const getChatRoomListRequest = async (accessToken: string) =>{
 }
 
 export const getUserListRequest = async (accessToken: string, nickname : string) =>{
-    const result = await axios.post(GET_USER_LIST_URL(nickname), authorization(accessToken))
+    const result = await axios.get(GET_USER_LIST_URL(nickname), authorization(accessToken))
         .then(response => {
+            console.log(nickname);
             const responseBody: GetUserListResponseDto = response.data;
             return responseBody;
         })
@@ -175,6 +176,20 @@ export const patchFriendRequest = async (accessToken: string, requestBody: Patch
     const result = await axios.patch(PATCH_FRIEND_URL(), requestBody, authorization(accessToken))
         .then(response => {
             const responseBody: PatchFriendResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error =>{
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+
+export const deleteFriendRequest = async (accessToken: string, nickname: string) =>{
+    const result = await axios.delete(DELETE_FRIEND_URL(nickname), authorization(accessToken))
+        .then(response => {
+            const responseBody: DeleteFriendResponseDto = response.data;
             return responseBody;
         })
         .catch(error =>{

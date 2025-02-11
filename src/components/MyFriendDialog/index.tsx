@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, KeyboardEvent, useEffect } from "react";
-import { getMyFriendRequest, getUserListRequest, postFriendRequest } from "../../apis"; // API 요청 함수
+import { deleteFriendRequest, getMyFriendRequest, getUserListRequest, postFriendRequest } from "../../apis"; // API 요청 함수
 import "./style.css"; // 스타일 파일
-import { GetMyFriendResponseDto, GetUserListResponseDto } from "../../apis/response/friend";
+import { DeleteFriendResponseDto, GetMyFriendResponseDto, GetUserListResponseDto } from "../../apis/response/friend";
 import { ResponseDto } from "../../apis/response";
 import { useCookies } from "react-cookie";
 import { UserList } from "../../types/interface";
@@ -38,10 +38,48 @@ export default function MyFriendDialog({ onClose }: { onClose: () => void }) {
         
     };
 
+    // function: deleteFriend 처리 함수 //
+    const deleteFriendResponse = (responseBody: DeleteFriendResponseDto | ResponseDto | null, userNickname: string) => {
+        if (!responseBody) return;
+        const { code } = responseBody;
+
+        if (code === "NU") {
+            alert("해당 사용자의 정보를 불려올 수 없습니다.");
+            return;
+        }
+        if (code !== "SU") {
+            alert("검색 중 오류가 발생했습니다.");
+            return;
+        }
+
+        setMyFriends((prevFriends) =>
+            prevFriends.filter((friend) => friend.nickname !== userNickname)
+        );
+        alert("삭제가 완료되었습니다.");
+        
+    };
+
     // event handler: 아이디 변경 이벤트 처리 //
     const onInviteButtonClickHandler =()=>{
         setShowInviteDialog(true);
     }
+
+    // event handler: 친구 삭제 버튼 클릭 이벤트 처리 //
+    const onRemoveFriendClickHandler = (nickname: string) => {
+        if (!nickname.trim()) return;
+
+        const accessToken = cookies.accessToken;
+        if (!accessToken){
+            alert("인증 과정에서 문제가 발생하였습니다.");
+            return;
+        }
+
+        const userNickname = nickname;
+        deleteFriendRequest(accessToken, userNickname).then((response) =>
+            deleteFriendResponse(response, userNickname)
+        );
+        
+    };
 
     // effect: 마운트 시 실행할 함수 //
     useEffect(() => {
@@ -59,32 +97,37 @@ export default function MyFriendDialog({ onClose }: { onClose: () => void }) {
         <div className="dialog-overlay">
             <div className="dialog">
                 <div className="dialog-header">
-                <h2>나의 친구 목록</h2>
-                
-                <button className="close-button" onClick={onClose}>
-                    ✕
-                </button>
+                    <h2>나의 친구 목록</h2>
+                    <button className="close-button" onClick={onClose}>
+                        ✕
+                    </button>
                 </div>
                 <button className="request-button" onClick={onInviteButtonClickHandler}>
                     요청 목록 보기
                 </button>
                 <div className="dialog-body">
                     <div className="friend-results">
-                    {myFriends.map((user, index) => (
-                        <div key={index} className="user-card">
-                            {user.profileImage ? (
-                                <img src={user.profileImage} alt={`${user.nickname} 프로필`} className="user-icon" />
-                            ) : (
-                                <div className="icon-box">
-                                    <div className="icon default-profile-icon"></div>
-                                </div>
-                            )}
-                            <span className="user-nickname">{user.nickname}</span>
-                        </div>
-                    ))}
-                    {myFriends.length === 0 && (
-                        <p>친구가 없습니다.</p>
-                    )}
+                        {myFriends.map((user, index) => (
+                            <div key={index} className="user-card">
+                                {user.profileImage ? (
+                                    <img src={user.profileImage} alt={`${user.nickname} 프로필`} className="user-icon" />
+                                ) : (
+                                    <div className="icon-box">
+                                        <div className="icon default-profile-icon"></div>
+                                    </div>
+                                )}
+                                <span className="user-nickname">{user.nickname}</span>
+                                <button
+                                    className="remove-friend-button"
+                                    onClick={() => onRemoveFriendClickHandler(user.nickname)}
+                                >
+                                    X
+                                </button>
+                            </div>
+                        ))}
+                        {myFriends.length === 0 && (
+                            <p>친구가 없습니다.</p>
+                        )}
                     </div>
                 </div>
             </div>
@@ -92,6 +135,5 @@ export default function MyFriendDialog({ onClose }: { onClose: () => void }) {
                 <InviteDialog onClose={() => setShowInviteDialog(false)} />
             )}
         </div>
-        
     );
 }
