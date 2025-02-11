@@ -22,10 +22,13 @@ export default function Header() {
 
     // state: 인증 페이지 상태 //
     const [isAuthPage, setAuthPage] = useState<boolean>(false);
+
     // state: 메인 페이지 상태 //
     const [isMainPage, setMainPage] = useState<boolean>(false);
+
     // state: 채팅 페이지 상태 //
     const [isMyChatPage, setIsMyChatPage] = useState<boolean>(false);
+
     // state: 유저 페이지 상태 //
     const [isUserPage, setUserPage] = useState<boolean>(false);
 
@@ -45,9 +48,7 @@ export default function Header() {
     
         // event handler: 마이페이지 버튼 클릭 이벤트 처리 함수 //
         const onMyPageButtonClickHandler =()=>{
-            if (!loginUser) return;
-            const {email} = loginUser;
-            navigate(USER_PATH(email));
+            alert("구현 준비 중");
         }
     
         // event handler: 로그아웃 버튼 클릭 이벤트 처리 함수 //
@@ -87,7 +88,7 @@ export default function Header() {
         const isUserPage = pathname.startsWith(USER_PATH(''));
         setUserPage(isUserPage);
         const isMyChatPage = pathname === MY_CHAT_PATH();
-        setUserPage(isMyChatPage);
+        setIsMyChatPage(isMyChatPage);
     }, [pathname] )
 
     // effect: login user가 변경될 때 마다 실행될 함수 //
