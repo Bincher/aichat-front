@@ -1,11 +1,11 @@
 import React, { useState, ChangeEvent, KeyboardEvent } from "react";
 import { getUserListRequest, postFriendRequest } from "../../apis"; // API 요청 함수
 import "./style.css"; // 스타일 파일
-import { GetUserListResponseDto } from "../../apis/response/user";
+import { GetUserListResponseDto } from "../../apis/response/friend";
 import { ResponseDto } from "../../apis/response";
 import { useCookies } from "react-cookie";
 import { UserList } from "../../types/interface";
-import PostFriendResponseDto from "../../apis/response/user/post-friend.response.dto";
+import PostFriendResponseDto from "../../apis/response/friend/post-friend.response.dto";
 
 export default function AddFriendDialog({ onClose }: { onClose: () => void }) {
     // state: 쿠키 상태 //

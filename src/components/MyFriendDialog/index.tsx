@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, KeyboardEvent, useEffect } from "react";
 import { getMyFriendRequest, getUserListRequest, postFriendRequest } from "../../apis"; // API 요청 함수
 import "./style.css"; // 스타일 파일
-import { GetMyFriendResponseDto, GetUserListResponseDto } from "../../apis/response/user";
+import { GetMyFriendResponseDto, GetUserListResponseDto } from "../../apis/response/friend";
 import { ResponseDto } from "../../apis/response";
 import { useCookies } from "react-cookie";
 import { UserList } from "../../types/interface";

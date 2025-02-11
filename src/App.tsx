@@ -12,6 +12,9 @@ import Header from './layouts/Header';
 import Authentication from './views/Authentication';
 import MyChat from './views/MyChat';
 import { ResponseDto } from './apis/response';
+import { GetSignInUserResponseDto } from './apis/response/user';
+import { User } from './types/interface';
+import { GetSignInUserRequest } from './apis';
 
 
 //   component: Application 컴포넌트   //
@@ -26,16 +29,23 @@ function App() {
   // state: cookie 상태 //
   const [cookies, setCookie] = useCookies();
 
-  // function: get sign in user response 처리 함수 //
-  const getSignInUserResponse = (responseBody: GetSignInUserResponseDto | ResponseDto | null) => {
-
-  }
-
   const startChat = () => {
     if (username.trim() !== "" && roomId.trim() !== "") {
       setIsChatActive(true);
     }
   };
+
+  // function: get sign in user response 처리 함수 //
+  const getSignInUserResponse = (responseBody: GetSignInUserResponseDto | ResponseDto | null) => {
+    if(!responseBody) return;
+    const {code} = responseBody;
+    if(code === 'AF' || code === 'NU' || code === "DBE"){
+      resetLoginUser();
+      return;
+    }
+    const loginUser: User = { ...(responseBody as GetSignInUserResponseDto)};
+    setLoginUser(loginUser);
+  }
 
   // effect: accessToken cookie 값이 변경될 때 마다 실행할 함수 //
   useEffect(()=>{
@@ -43,6 +53,7 @@ function App() {
       resetLoginUser();
       return;
     }
+    GetSignInUserRequest(cookies.accessToken).then(getSignInUserResponse);
   },[cookies.accessToken])
 
   return (

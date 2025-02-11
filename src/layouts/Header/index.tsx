@@ -2,7 +2,7 @@ import React, { ChangeEvent, useRef, useState, KeyboardEvent, useEffect} from 'r
 import useLoginUserStore from '../../stores/login-user.store';
 import { useCookies } from 'react-cookie';
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { AUTH_PATH, CHAT_DETAIL_PATH, CHAT_PATH, MAIN_PATH, USER_PATH } from '../../constant';
+import { AUTH_PATH, CHAT_DETAIL_PATH, CHAT_PATH, MAIN_PATH, MY_CHAT_PATH, USER_PATH } from '../../constant';
 import './style.css';
 
 // component: 헤더 레이아웃 //
@@ -24,12 +24,8 @@ export default function Header() {
     const [isAuthPage, setAuthPage] = useState<boolean>(false);
     // state: 메인 페이지 상태 //
     const [isMainPage, setMainPage] = useState<boolean>(false);
-    // state: 검색 페이지 상태 //
-    const [isSearchPage, setSearchPage] = useState<boolean>(false);
-    // state: 채팅 상세 정보 페이지 상태 //
-    const [isChatDetailPage, setBoardDetailPage] = useState<boolean>(false);
     // state: 채팅 페이지 상태 //
-    const [isChatPage, setBoardWritePage] = useState<boolean>(false);
+    const [isMyChatPage, setIsMyChatPage] = useState<boolean>(false);
     // state: 유저 페이지 상태 //
     const [isUserPage, setUserPage] = useState<boolean>(false);
 
@@ -54,7 +50,7 @@ export default function Header() {
             navigate(USER_PATH(email));
         }
     
-        // event handler: 마이페이지 버튼 클릭 이벤트 처리 함수 //
+        // event handler: 로그아웃 버튼 클릭 이벤트 처리 함수 //
         const onSignOutButtonClickHandler =()=>{
             resetLoginUser();
             setCookie('accessToken','',{path: MAIN_PATH(),expires: new Date()});
@@ -90,6 +86,8 @@ export default function Header() {
         setMainPage(isMainPage);
         const isUserPage = pathname.startsWith(USER_PATH(''));
         setUserPage(isUserPage);
+        const isMyChatPage = pathname === MY_CHAT_PATH();
+        setUserPage(isMyChatPage);
     }, [pathname] )
 
     // effect: login user가 변경될 때 마다 실행될 함수 //
@@ -108,7 +106,7 @@ export default function Header() {
                     <div className='header-logo'>{'CHAT with AI secretary'}</div>
                 </div>
                 <div className='header-right-box'>
-                    {(isMainPage || isChatDetailPage || isUserPage) && <MyPageButton/>}
+                    {(isMainPage || isUserPage || isMyChatPage) && <MyPageButton/>}
                 </div>
             </div>
         </div>
