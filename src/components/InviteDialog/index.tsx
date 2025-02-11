@@ -10,7 +10,6 @@ export default function InviteDialog({ onClose }: { onClose: () => void }) {
     // state: 쿠키 상태 //
     const [cookies] = useCookies();
     const [myUsers, setMyUsers] = useState<UserList[]>([]); // 요청 목록 상태
-    const [isAccept, setIsAccept] = useState<boolean>(false);
 
     // function: 서버 응답 처리 함수 //
     const getInviteFriendResponse = (responseBody: GetInviteFriendResponseDto | ResponseDto | null) => {
@@ -61,7 +60,6 @@ export default function InviteDialog({ onClose }: { onClose: () => void }) {
             return;
         }
 
-        setIsAccept(true);
         const requestBody = {
             nickname: userNickname,
             friendAccept: true
@@ -82,7 +80,6 @@ export default function InviteDialog({ onClose }: { onClose: () => void }) {
             return;
         }
 
-        setIsAccept(false);
         const requestBody = {
             nickname: userNickname,
             friendAccept: false

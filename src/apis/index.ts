@@ -4,9 +4,9 @@ import { CheckCertificationResponseDto, EmailCertificationResponseDto, IdCheckRe
 import ResponseDto from "./response/Response.dto";
 import GetChatRoomListResponseDto from "./response/auth/get-chat-room-list.response.dto";
 import { GetInviteFriendResponseDto, GetMyFriendResponseDto, GetUserListResponseDto, PatchFriendResponseDto } from "./response/user";
-import { GetUserListRequestDto, PostFriendRequestDto } from "./request/user";
+import { PostFriendRequestDto } from "./request/friend";
 import PostFriendResponseDto from "./response/user/post-friend.response.dto";
-import PatchFriendRequestDto from "./request/user/patch-friend.response.dto";
+import PatchFriendRequestDto from "./request/friend/patch-friend.response.dto";
 
 const DOMAIN = 'http://localhost:8090';
 
@@ -22,11 +22,12 @@ const CHECK_CERTIFICATION_URL =()=> `${API_DOMAIN}/auth/check-certification`;
 const SIGN_IN_URL =()=> `${API_DOMAIN}/auth/sign-in`;
 const SIGN_UP_URL =()=> `${API_DOMAIN}/auth/sign-up`;
 const GET_CHAT_ROOM_LIST_URL =()=> `${API_DOMAIN}/chat/chat-room`;
-const GET_USER_LIST_URL =()=> `${API_DOMAIN}/user/nickname`;
-const POST_FRIEND_URL =()=> `${API_DOMAIN}/user/friend/send`;
-const GET_MY_FRIEND_URL =()=> `${API_DOMAIN}/user/friend`;
-const GET_INVITE_FRIEND_URL =()=> `${API_DOMAIN}/user/friend/invite`;
-const PATCH_FRIEND_URL =()=> `${API_DOMAIN}/user/friend/request`;
+const GET_USER_LIST_URL =(nickname : String)=> `${API_DOMAIN}/friend/${nickname}`;
+const POST_FRIEND_URL =()=> `${API_DOMAIN}/friend/request`;
+const GET_MY_FRIEND_URL =()=> `${API_DOMAIN}/friend/myfriend`;
+const GET_INVITE_FRIEND_URL =()=> `${API_DOMAIN}/friend/invite`;
+const PATCH_FRIEND_URL =()=> `${API_DOMAIN}/friend/response`;
+const DELETE_FRIEND_URL =()=> `${API_DOMAIN}/friend/myfriend/drop`;
 
 export const idCheckRequest = async (requestBody: IdCheckRequestDto)=>{
     const result = await axios.post(ID_CHECK_URL(), requestBody)
@@ -112,8 +113,8 @@ export const getChatRoomListRequest = async (accessToken: string) =>{
     return result;
 }
 
-export const getUserListRequest = async (accessToken: string, requestBody: GetUserListRequestDto) =>{
-    const result = await axios.post(GET_USER_LIST_URL(), requestBody, authorization(accessToken))
+export const getUserListRequest = async (accessToken: string, nickname : string) =>{
+    const result = await axios.post(GET_USER_LIST_URL(nickname), authorization(accessToken))
         .then(response => {
             const responseBody: GetUserListResponseDto = response.data;
             return responseBody;

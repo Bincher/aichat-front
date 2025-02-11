@@ -86,8 +86,8 @@ export default function AddFriendDialog({ onClose }: { onClose: () => void }) {
             alert("사용자 인증 과정에서 문제가 발생하였습니다. 재로그인 후 다시 시도해주세요");
             return;
         }
-        const requestBody = { nickname };
-        getUserListRequest(accessToken, requestBody).then(getUserListResponse);
+        const userNickname = nickname;
+        getUserListRequest(accessToken, userNickname).then(getUserListResponse);
         
     };
 

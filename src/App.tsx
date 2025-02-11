@@ -11,6 +11,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Header from './layouts/Header';
 import Authentication from './views/Authentication';
 import MyChat from './views/MyChat';
+import { ResponseDto } from './apis/response';
 
 
 //   component: Application 컴포넌트   //
@@ -26,7 +27,7 @@ function App() {
   const [cookies, setCookie] = useCookies();
 
   // function: get sign in user response 처리 함수 //
-  const getSignInUserResponse = () => {
+  const getSignInUserResponse = (responseBody: GetSignInUserResponseDto | ResponseDto | null) => {
 
   }
 
