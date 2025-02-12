@@ -1,0 +1,100 @@
+/* 다이얼로그 공통 스타일 */
+.dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .dialog {
+    background-color: #ffffff;
+    border-radius: 12px;
+    width: 500px;
+    padding: 20px;
+  }
+  
+  .dialog-header {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .dialog-body {
+    margin-top: 20px;
+  }
+  
+  /* 입력 그룹 */
+  .input-group label {
+    display: block;
+    font-weight: bold;
+  }
+  
+  .input-group input {
+    width: calc(100% - 20px);
+    padding: 10px;
+  }
+  
+  /* 친구 목록 */
+  .friend-list,
+  .selected-users {
+    margin-top: 20px;
+  }
+  
+  .friend-item,
+  .selected-user-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .friend-item.selected {
+    background-color: #e0f7fa; /* 선택된 항목 강조 */
+  }
+  
+  .friend-icon,
+  .icon-box .icon.default-profile-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  /* 생성 버튼 */
+  .create-button {
+    margin-top: 20px;
+  }
+  
+  /* 스크롤 가능한 컨테이너 */
+.scrollable {
+    max-height: 200px; /* 최대 높이 설정 */
+    overflow-y: auto; /* 세로 스크롤 활성화 */
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  /* 검색 입력 필드 */
+  .input-group input {
+    width: calc(100% - 20px);
+    padding: 10px;
+  }
+  
+  /* 선택된 항목 강조 */
+  .friend-item.selected {
+    background-color: #e0f7fa; /* 선택된 항목 배경색 */
+  }
+  
+  /* 기본 아이템 스타일 */
+  .friend-item,
+  .selected-user-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .friend-item:hover {
+    background-color: #f1f1f1; /* 호버 시 배경색 변경 */
+  }
+  

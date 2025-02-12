@@ -9,6 +9,7 @@ import { ResponseDto } from "../../apis/response";
 import './style.css';
 import AddFriendDialog from "../../components/FriendDialog";
 import MyFriendDialog from "../../components/MyFriendDialog";
+import CreateChatRoomDialog from "../../components/CreateChatRoomDialog";
 
 // component: 메인 화면 컴포넌트 //
 export default function MyChat() {
@@ -29,6 +30,9 @@ export default function MyChat() {
 
     // state: 친구 목록 다이얼로그 표시 상태 //
     const [showMyFriendDialog, setShowMyFriendDialog] = useState<boolean>(false);
+
+    // state: 친구 목록 다이얼로그 표시 상태 //
+    const [showCreateChatRoomDialog, setShowCreateChatRoomDialog] = useState<boolean>(false);
 
     // function: 서버 응답 처리 함수 //
     const getChatRoomListResponse = (responseBody: GetChatRoomListResponseDto | ResponseDto | null) => {
@@ -64,7 +68,7 @@ export default function MyChat() {
 
     // event handler: 채팅창 만들기 버튼 클릭 이벤트 처리 //
     const onCreateChatClick = () => {
-        alert("채팅방 만들기 기능은 준비 중입니다.");
+        setShowCreateChatRoomDialog(true);
     };
 
     // event handler: 친구 추가 버튼 클릭 이벤트 처리 //
@@ -131,6 +135,9 @@ export default function MyChat() {
             )}
             {showMyFriendDialog && (
                 <MyFriendDialog onClose={() => setShowMyFriendDialog(false)} />
+            )}
+            {showCreateChatRoomDialog && (
+                <CreateChatRoomDialog onClose={() => setShowCreateChatRoomDialog(false)} />
             )}
         </div>
     );

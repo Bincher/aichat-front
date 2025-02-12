@@ -8,6 +8,8 @@ import { PostFriendRequestDto } from "./request/friend";
 import PostFriendResponseDto from "./response/friend/post-friend.response.dto";
 import PatchFriendRequestDto from "./request/friend/patch-friend.response.dto";
 import { GetSignInUserResponseDto } from "./response/user";
+import { CreateChatRoomRequestDto } from "./request/chat";
+import { CreateChatRoomResponseDto } from "./response/chat";
 
 const DOMAIN = 'http://localhost:8090';
 
@@ -30,6 +32,7 @@ const GET_INVITE_FRIEND_URL =()=> `${API_DOMAIN}/friend/invite`;
 const PATCH_FRIEND_URL =()=> `${API_DOMAIN}/friend/response`;
 const DELETE_FRIEND_URL =(nickname : String)=> `${API_DOMAIN}/friend/drop/${nickname}`;
 const GET_SIGN_IN_USER_URL =()=> `${API_DOMAIN}/user`;
+const CREATE_CHAT_ROOM_URL =()=> `${API_DOMAIN}/chat/chat-room/create`;
 
 export const idCheckRequest = async (requestBody: IdCheckRequestDto)=>{
     const result = await axios.post(ID_CHECK_URL(), requestBody)
@@ -204,6 +207,20 @@ export const GetSignInUserRequest = async (accessToken: string) =>{
     const result = await axios.get(GET_SIGN_IN_USER_URL(), authorization(accessToken))
         .then(response =>{
             const responseBody: GetSignInUserResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error =>{
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result;
+} 
+
+export const createChatRoomRequest = async (accessToken: string, requestBody: CreateChatRoomRequestDto) =>{
+    const result = await axios.post(CREATE_CHAT_ROOM_URL(), requestBody, authorization(accessToken))
+        .then(response =>{
+            const responseBody: CreateChatRoomResponseDto = response.data;
             return responseBody;
         })
         .catch(error =>{
