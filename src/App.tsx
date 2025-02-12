@@ -29,12 +29,6 @@ function App() {
   // state: cookie 상태 //
   const [cookies, setCookie] = useCookies();
 
-  const startChat = () => {
-    if (username.trim() !== "" && roomId.trim() !== "") {
-      setIsChatActive(true);
-    }
-  };
-
   // function: get sign in user response 처리 함수 //
   const getSignInUserResponse = (responseBody: GetSignInUserResponseDto | ResponseDto | null) => {
     if(!responseBody) return;
@@ -64,38 +58,13 @@ function App() {
           <Route path={AUTH_PATH()} element={<Authentication />} />
           <Route path={MY_CHAT_PATH()} element={<MyChat />} />
           <Route path={USER_PATH("bincher")} element={<Main />} />
-          <Route path={CHAT_PATH(1)} element={<Main />} />
+          <Route path={CHAT_PATH(':chatRoomId')} element={<ChatRoom/>} />
           <Route path={CHAT_DETAIL_PATH(1)} element={<Main />} />
-          <Route path='*'  element={<h1>404 Not Found</h1>}/>
         </Route>
+        <Route path='*'  element={<h1>404 Not Found</h1>}/>
       </Routes>
 
   );
 };
-
-    // <div style={{ padding: "20px" }}>
-    //   {!isChatActive ? (
-    //     <div>
-    //       <h2>Enter Chat Room</h2>
-    //       <input
-    //         type="text"
-    //         placeholder="Enter your username"
-    //         value={username}
-    //         onChange={(e) => setUsername(e.target.value)}
-    //         style={{ marginBottom: "10px", display: "block" }}
-    //       />
-    //       <input
-    //         type="text"
-    //         placeholder="Enter room ID"
-    //         value={roomId}
-    //         onChange={(e) => setRoomId(e.target.value)}
-    //         style={{ marginBottom: "10px", display: "block" }}
-    //       />
-    //       <button onClick={startChat}>Join Chat</button>
-    //     </div>
-    //   ) : (
-    //     <ChatRoom roomId={roomId} username={username} />
-    //   )}
-    // </div>
 
 export default App;

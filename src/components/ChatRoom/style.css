@@ -1,0 +1,91 @@
+/* 전체 컨테이너 */
+.chat-room-container {
+    display: flex;
+    flex-direction: column;
+    height: 90vh; /* 화면 높이를 100% 사용 */
+    max-width: 100%; /* 가로 화면 꽉 채우기 */
+    margin: 0 auto;
+    background-color: #f9f9f9;
+}
+
+/* 헤더 */
+.chat-room-header {
+    text-align: center;
+    padding: 10px;
+    background-color: #007bff; /* 헤더 배경색 */
+    color: white; /* 텍스트 색상 */
+}
+
+.chat-room-header h2 {
+    margin: 0;
+}
+
+/* 메시지 영역 */
+.chat-messages {
+    flex-grow: 1; /* 남은 공간을 차지 */
+    overflow-y: auto; /* 스크롤 활성화 */
+    padding: 10px;
+    background-color: #fff;
+
+    /* 높이 제한 추가 */
+    max-height: calc(100vh - 150px); /* 헤더와 입력 영역을 제외한 높이 계산 */
+}
+
+/* 메시지 스타일 */
+.chat-message {
+    margin-bottom: 10px;
+}
+
+.chat-message strong {
+    color: #007bff; /* 닉네임 색상 */
+}
+
+.chat-message span {
+    font-size: 12px;
+    color: #888; /* 타임스탬프 색상 */
+}
+
+/* 입력 영역 */
+.chat-input-container {
+    display: flex;
+    padding: 10px;
+    background-color: #f1f1f1; /* 입력 영역 배경색 */
+    border-top: 1px solid #ddd; /* 위쪽에 경계선 추가 */
+
+    /* 고정된 높이 설정 */
+    height: 60px;
+}
+
+.chat-input-container input[type="text"] {
+    flex-grow: 1; /* 입력 필드가 가능한 넓게 차지 */
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.chat-input-container button {
+    margin-left: 10px; /* 버튼과 입력 필드 간격 */
+    padding: 10px 20px;
+    background-color: #007bff; /* 버튼 배경색 */
+    color: white; /* 버튼 텍스트 색상 */
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.chat-input-container button:hover {
+    background-color: #0056b3; /* 버튼 호버 시 색상 */
+}
+
+/* 스크롤바 커스터마이징 (선택 사항) */
+.chat-messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background-color: #ccc; /* 스크롤바 색상 */
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa; /* 호버 시 스크롤바 색상 */
+}

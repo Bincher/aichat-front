@@ -10,6 +10,7 @@ import './style.css';
 import AddFriendDialog from "../../components/FriendDialog";
 import MyFriendDialog from "../../components/MyFriendDialog";
 import CreateChatRoomDialog from "../../components/CreateChatRoomDialog";
+import ChatRoom from "../../components/ChatRoom";
 
 // component: 메인 화면 컴포넌트 //
 export default function MyChat() {
@@ -31,7 +32,7 @@ export default function MyChat() {
     // state: 친구 목록 다이얼로그 표시 상태 //
     const [showMyFriendDialog, setShowMyFriendDialog] = useState<boolean>(false);
 
-    // state: 친구 목록 다이얼로그 표시 상태 //
+    // state: 채팅 생성 다이얼로그 표시 상태 //
     const [showCreateChatRoomDialog, setShowCreateChatRoomDialog] = useState<boolean>(false);
 
     // function: 서버 응답 처리 함수 //
@@ -66,24 +67,10 @@ export default function MyChat() {
         getChatRoomListRequest(accessToken).then(getChatRoomListResponse);
     }, [cookies.accessToken]);
 
-    // event handler: 채팅창 만들기 버튼 클릭 이벤트 처리 //
-    const onCreateChatClick = () => {
-        setShowCreateChatRoomDialog(true);
-    };
-
-    // event handler: 친구 추가 버튼 클릭 이벤트 처리 //
-    const onAddFriendClick = () => {
-        setShowAddFriendDialog(true);
-    };
-
-    // event handler: 친구 목록 버튼 클릭 이벤트 처리 //
-    const onMyFriendClick = () => {
-        setShowMyFriendDialog(true);
-    };
-
-    // event handler: 채팅 삭제 버튼 클릭 이벤트 처리 //
-    const onDeleteChatClick = () => {
-        alert("채팅 삭제 기능은 준비 중입니다.");
+    // event handler: 채팅방 카드 클릭 이벤트 처리 //
+    const onChatRoomCardClickHandler = (roomId: number, userNickname: string) => {
+        const roomIdString = roomId.toString();
+        navigate(`/chatroom/${roomIdString}`);
     };
 
     // render: mychat 페이지 렌더링 //
@@ -91,41 +78,49 @@ export default function MyChat() {
         <div className="my-chat-wrapper">
             <div className="my-chat-header">
                 <div className="my-chat-header-left">
-                    <button className="chat-button" onClick={onCreateChatClick}>
+                    <button className="chat-button" onClick={() => setShowCreateChatRoomDialog(true)}>
                         채팅 만들기
                     </button>
-                    <button className="chat-button" onClick={onAddFriendClick}>
+                    <button className="chat-button" onClick={() => setShowAddFriendDialog(true)}>
                         친구 추가
                     </button>
-                    <button className="chat-button" onClick={onMyFriendClick}>
+                    <button className="chat-button" onClick={() => setShowMyFriendDialog(true)}>
                         친구 목록
                     </button>
                 </div>
                 <div className="my-chat-header-right">
-                    <button className="chat-button" onClick={onDeleteChatClick}>
+                    <button className="chat-button" onClick={() => alert("채팅 삭제 기능은 준비 중입니다.")}>
                         채팅 삭제
                     </button>
                 </div>
             </div>
             <div className="my-chat-body">
                 {chatRooms.map((chatRoom) => (
-                    <div key={chatRoom.chatRoomId} className="chat-card">
+                    <div
+                        key={chatRoom.chatRoomId}
+                        className="chat-card"
+                        onClick={() =>{
+                            console.log("Card clicked:", chatRoom.chatRoomId)
+                            onChatRoomCardClickHandler(chatRoom.chatRoomId, cookies.userNickname)
+                        }
+                        }
+                    >
                         <h3>{chatRoom.roomName}</h3>
                         <p>참여 유저:</p>
                         <ul>
-                        {chatRoom.users.map((user, index) => (
-                            <div key={index} className="user-info">
-                                {user.profileImage ? (
-                                    <img src={user.profileImage} alt={`${user.nickname} 프로필`} className="user-icon" />
-                                ) : (
-                                    <div className="icon-box">
-                                        <div className="icon default-profile-icon"></div>
-                                    </div>
-                                )}
-                                <span className="user-nickname">{user.nickname}</span>
-                                {index !== chatRoom.users.length - 1 && <span className="separator"> / </span>}
-                            </div>
-                        ))}
+                            {chatRoom.users.map((user, index) => (
+                                <div key={index} className="user-info">
+                                    {user.profileImage ? (
+                                        <img src={user.profileImage} alt={`${user.nickname} 프로필`} className="user-icon" />
+                                    ) : (
+                                        <div className="icon-box">
+                                            <div className="icon default-profile-icon"></div>
+                                        </div>
+                                    )}
+                                    <span className="user-nickname">{user.nickname}</span>
+                                    {index !== chatRoom.users.length - 1 && <span className="separator"> / </span>}
+                                </div>
+                            ))}
                         </ul>
                     </div>
                 ))}
