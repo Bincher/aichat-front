@@ -4,5 +4,6 @@ import User from "./user.interface";
 import FriendUsers from "./friend-users.interface";
 import UserList from "./user-list.interface";
 import Friends from "./friend.interface";
+import ChatRoom from "./chat-room.interface";
 
-export type { User, Chat, ChatRoomUsers, FriendUsers, UserList, Friends };
+export type { User, Chat, ChatRoomUsers, FriendUsers, UserList, Friends, ChatRoom };

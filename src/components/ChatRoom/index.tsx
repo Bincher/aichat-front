@@ -4,14 +4,20 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useLoginUserStore } from "../../stores";
 import "./style.css"; 
-import { gptFactCheckRequest, gptOrthographyRequest, gptRecommendTextRequest, gptSummaryRequest } from "../../apis";
+import { chatRoomInformationRequest, gptFactCheckRequest, gptOrthographyRequest, gptRecommendTextRequest, gptSummaryRequest } from "../../apis";
 import { GptFactCheckResponseDto, GptOrthographyResponseDto, GptRecommendTextResponseDto, GptSummaryResponseDto } from "../../apis/response/gpt";
 import { ResponseDto } from "../../apis/response";
+import { ChatRoomInformationResponseDto } from "../../apis/response/chat";
+import { UserList } from "../../types/interface";
+import { useCookies } from "react-cookie";
 
 const ChatRoom: React.FC = () => {
 
     // state: chatRoomId param //
     const { chatRoomId } = useParams<{ chatRoomId: string }>();
+
+    // state: 쿠키 상태 //
+    const [cookies] = useCookies();
 
     // state: 메시지 목록 상태 //
     const [messages, setMessages] = useState<Message[]>([]);
@@ -28,11 +34,40 @@ const ChatRoom: React.FC = () => {
     // state: ai 비서 응답 상태 //
     const [aiResponse, setAiResponse] = useState<string | null>(null);
 
+    // state: 채팅방 이름 상태 //
+    const [chatRoomName, setChatRoomName] = useState<string>("");
+
+    // state: 유저 정보 상태 //
+    const [users, setUsers] = useState<UserList[]>([]); 
+
+    // state: 로딩 상태 //
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
     // 로그인 유저 상태 //
     const { loginUser } = useLoginUserStore();
 
     // state: 메시지 목록 요소 참조 상태 //
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+    // function: chatRoomInformation 처리 함수 //
+    const chatRoomInformationResponse = (responseBody: ChatRoomInformationResponseDto | ResponseDto | null) => {
+        if (!responseBody) return;
+        const { code } = responseBody;
+
+        if (code === "NR") {
+            alert("적절한 데이터를 가져오지 못했습니다. 인터넷 확인 후 다시 시도해주세요");
+        }
+        if (code !== "SU") {
+            alert("오류가 발생하였습니다.");
+            return;
+        }
+
+        const { chatRoom } = responseBody as ChatRoomInformationResponseDto;
+        
+        setChatRoomName(chatRoom.roomName);
+        setUsers(chatRoom.users);
+        
+    };
 
     // function: gptFactCheck 처리 함수 //
     const gptFactCheckResponse = (responseBody: GptFactCheckResponseDto | ResponseDto | null) => {
@@ -106,7 +141,7 @@ const ChatRoom: React.FC = () => {
         setAiResponse(`추천 답변: ${recommendedText}`);
     };
 
-    // effect: MongoDB에서 채팅 내역 불러오기
+    // effect: MongoDB에서 채팅 내역 불러오기 //
     useEffect(() => {
         const fetchChatHistory = async () => {
             try {
@@ -114,12 +149,39 @@ const ChatRoom: React.FC = () => {
                     `http://localhost:8090/api/v1/chat/history/${chatRoomId}`
                 );
                 setMessages(response.data);
+
+                const requestBody = { chatRoomId };
+                
             } catch (error) {
                 console.error("Failed to fetch chat history:", error);
             }
         };
 
         fetchChatHistory();
+        
+    }, [chatRoomId]);
+
+    // effect: 채팅방 정보 가져오기 //
+    useEffect(() => {
+        const fetchChatRoomInfo = async () => {
+            try {
+                if (chatRoomId) {
+                    const requestBody = { chatRoomId };
+                    const accessToken = cookies.accessToken;
+                        if (!accessToken) {
+                            alert("인증 과정에서 문제가 발생하였습니다.");
+                            return;
+                        }
+                    await chatRoomInformationRequest(accessToken, requestBody).then(chatRoomInformationResponse);
+                } else {
+                    alert("chatRoomId가 유효하지 않습니다.");
+                }
+            } catch (error) {
+                console.error("Failed to fetch chat room information:", error);
+            }
+        };
+    
+        fetchChatRoomInfo();
     }, [chatRoomId]);
 
     // effect: WebSocket 연결 설정
@@ -174,6 +236,7 @@ const ChatRoom: React.FC = () => {
     const AISecretaryButtonClickHandler = async (actionType: string) => {
 
         try {
+            setIsLoading(true);
             let requestBody;
 
             switch (actionType) {
@@ -220,6 +283,8 @@ const ChatRoom: React.FC = () => {
             }
         } catch (error) {
             console.error("클릭 과정에서 문제가 발생하였습니다. 다음 에러와 함께 관리자에게 문의해주세요.", error);
+        } finally {
+            setIsLoading(false); // 로딩 종료
         }
     };
     
@@ -236,11 +301,12 @@ const ChatRoom: React.FC = () => {
     return (
         <div className="chat-room-container">
             <div className="chat-room-header">
-                <h2>Chat Room {chatRoomId}</h2>
+                <h2>{chatRoomName || "Loading..."}</h2>
             </div>
             <div className="chat-messages">
                 {messages.map((msg, index) => {
                     const isMyMessage = msg.sender === loginUser?.nickname;
+                    const userProfile = users.find((user) => user.nickname === msg.sender);
 
                     return (
                         <div
@@ -248,23 +314,47 @@ const ChatRoom: React.FC = () => {
                             className={`chat-message ${isMyMessage ? "my-message" : "other-message"}`}
                         >
                             {isMyMessage ? (
-                                // 내 채팅: 타임스탬프 -> 메시지 -> 보낸 사람
                                 <>
                                     <button
-                                            className="fact-check-button"
-                                            onClick={() => factCheckEventClickHandler(msg.content)}
-                                        >
-                                            🕵️‍♂️ FactCheck
-                                        </button>
+                                        className="fact-check-button"
+                                        onClick={() => factCheckEventClickHandler(msg.content)}
+                                    >
+                                        🕵️‍♂️ FactCheck
+                                    </button>
                                     <span className="message-timestamp">
                                         {new Date(msg.timestamp).toLocaleTimeString()}
                                     </span>
                                     <div className="message-content">{msg.content}</div>
                                     <strong className="message-sender">{msg.sender}</strong>
+                                    <div className="profile-container">
+                                        {userProfile?.profileImage ? (
+                                            <img
+                                                src={userProfile.profileImage}
+                                                alt={`${msg.sender}'s profile`}
+                                                className="profile-image"
+                                            />
+                                        ) : (
+                                            <div className="icon-box">
+                                                <div className="icon default-profile-icon"></div>
+                                            </div>
+                                        )}
+                                    </div>
                                 </>
                             ) : (
-                                // 다른 사람의 채팅: 보낸 사람 -> 메시지 -> 타임스탬프
                                 <>
+                                    <div className="profile-container">
+                                        {userProfile?.profileImage ? (
+                                            <img
+                                                src={userProfile.profileImage}
+                                                alt={`${msg.sender}'s profile`}
+                                                className="profile-image"
+                                            />
+                                        ) : (
+                                            <div className="icon-box">
+                                                <div className="icon default-profile-icon"></div>
+                                            </div>
+                                        )}
+                                    </div>
                                     <strong className="message-sender">{msg.sender}</strong>
                                     <div className="message-content">{msg.content}</div>
                                     <span className="message-timestamp">
@@ -295,13 +385,21 @@ const ChatRoom: React.FC = () => {
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Type your message..."
+                    placeholder="메시지를 입력하세요"
                 />
                 <button onClick={sendMessageButtonClickHandler}>Send</button>
                 <div className="ai-assistant-container">
-                    <button className="ai-assistant-button" onClick={() => setShowOptions(!showOptions)}>
-                        🤖 AI Secretary
-                    </button>
+                <button
+                    className="ai-assistant-button"
+                    onClick={() => setShowOptions(!showOptions)}
+                    disabled={isLoading} // 로딩 중에는 클릭 비활성화
+                >
+                    {isLoading ? (
+                        <span className="loading-spinner"></span> // 로딩 중일 때 표시
+                    ) : (
+                        "🤖 AI Secretary" // 기본 텍스트
+                    )}
+                </button>
                     {showOptions && (
                         <div className="ai-options-modal">
                             <ul>
@@ -316,6 +414,7 @@ const ChatRoom: React.FC = () => {
                 </div>
             </div>
         </div>
+        
     );
 };
     
