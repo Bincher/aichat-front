@@ -25,6 +25,9 @@ const ChatRoom: React.FC = () => {
     // state: ai 비서 옵션 선택 클릭 상태 //
     const [showOptions, setShowOptions] = useState<boolean>(false);
 
+    // state: ai 비서 응답 상태 //
+    const [aiResponse, setAiResponse] = useState<string | null>(null);
+
     // 로그인 유저 상태 //
     const { loginUser } = useLoginUserStore();
 
@@ -47,7 +50,7 @@ const ChatRoom: React.FC = () => {
         }
 
         const { correctedText, originalText } = responseBody as GptFactCheckResponseDto;
-        alert(correctedText + originalText);
+        setAiResponse(`팩트 체크 결과: ${correctedText}`);
     };
 
     // function: gptOrthography 처리 함수 //
@@ -66,16 +69,15 @@ const ChatRoom: React.FC = () => {
         }
 
         const { correctedText, originalText } = responseBody as GptOrthographyResponseDto;
-        alert(correctedText + originalText);
+        setAiResponse(`맞춤법 검사 결과: ${correctedText}`);
     };
 
     // function: gptSummary 처리 함수 //
     const gptSummaryResponse = (responseBody: GptSummaryResponseDto | ResponseDto | null) => {
         if (!responseBody) return;
-        console.log(responseBody);
         const { code } = responseBody;
 
-        if (code == "NR") {
+        if (code === "NR") {
             alert("적절한 데이터를 가져오지 못했습니다. 인터넷 확인 후 다시 시도해주세요");
         }
         if (code !== "SU") {
@@ -84,16 +86,15 @@ const ChatRoom: React.FC = () => {
         }
 
         const { recommendedText } = responseBody as GptSummaryResponseDto;
-        alert(recommendedText);
+        setAiResponse(`채팅 요약: ${recommendedText}`);
     };
 
     // function: gptRecommendText 처리 함수 //
     const gptRecommendTextResponse = (responseBody: GptRecommendTextResponseDto | ResponseDto | null) => {
         if (!responseBody) return;
-        console.log(responseBody);
         const { code } = responseBody;
 
-        if (code == "NR") {
+        if (code === "NR") {
             alert("적절한 데이터를 가져오지 못했습니다. 인터넷 확인 후 다시 시도해주세요");
         }
         if (code !== "SU") {
@@ -102,7 +103,7 @@ const ChatRoom: React.FC = () => {
         }
 
         const { recommendedText } = responseBody as GptRecommendTextResponseDto;
-        alert(recommendedText);
+        setAiResponse(`추천 답변: ${recommendedText}`);
     };
 
     // effect: MongoDB에서 채팅 내역 불러오기
@@ -170,11 +171,16 @@ const ChatRoom: React.FC = () => {
     };
 
     const handleAIAction = async (actionType: string) => {
+
         try {
             let requestBody;
 
             switch (actionType) {
                 case "orthography":
+                    if(inputValue === ""){
+                        alert("입력창에 메시지를 먼저 입력하셔야 합니다.");
+                        return;
+                    }
                     requestBody = {
                         prompt : `'${inputValue}'은(는) 어법과 맞춤법이 올바름?`
                     }
@@ -182,6 +188,10 @@ const ChatRoom: React.FC = () => {
                     gptOrthographyRequest(requestBody).then(gptOrthographyResponse);
                     break;
                 case "factCheck":
+                    if(inputValue === ""){
+                        alert("입력창에 메시지를 먼저 입력하셔야 합니다.");
+                        return;
+                    }
                     requestBody = {
                         prompt : `'${inputValue}'은(는) 사실인지 검증해줘`
                     }
@@ -227,19 +237,56 @@ const ChatRoom: React.FC = () => {
                 <h2>Chat Room {chatRoomId}</h2>
             </div>
             <div className="chat-messages">
-                {messages.map((msg, index) => (
-                    <div key={index} className="chat-message">
-                        <strong>{msg.sender}</strong>: {msg.content}{" "}
-                        <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
-                        <button
-                            className="fact-check-button"
-                            onClick={() => handleFactCheck(msg.content)}
+                {messages.map((msg, index) => {
+                    const isMyMessage = msg.sender === loginUser?.nickname;
+
+                    return (
+                        <div
+                            key={index}
+                            className={`chat-message ${isMyMessage ? "my-message" : "other-message"}`}
                         >
-                            🕵️‍♂️ Fact Check
-                        </button>
-                    </div>
-                ))}
+                            {isMyMessage ? (
+                                // 내 채팅: 타임스탬프 -> 메시지 -> 보낸 사람
+                                <>
+                                    <button
+                                            className="fact-check-button"
+                                            onClick={() => handleFactCheck(msg.content)}
+                                        >
+                                            🕵️‍♂️ FactCheck
+                                        </button>
+                                    <span className="message-timestamp">
+                                        {new Date(msg.timestamp).toLocaleTimeString()}
+                                    </span>
+                                    <div className="message-content">{msg.content}</div>
+                                    <strong className="message-sender">{msg.sender}</strong>
+                                </>
+                            ) : (
+                                // 다른 사람의 채팅: 보낸 사람 -> 메시지 -> 타임스탬프
+                                <>
+                                    <strong className="message-sender">{msg.sender}</strong>
+                                    <div className="message-content">{msg.content}</div>
+                                    <span className="message-timestamp">
+                                        {new Date(msg.timestamp).toLocaleTimeString()}
+                                    </span>
+                                    <button
+                                        className="fact-check-button"
+                                        onClick={() => handleFactCheck(msg.content)}
+                                    >
+                                        🕵️‍♂️ FactCheck
+                                    </button>
+                                </>
+                            )}
+                        </div>
+                    );
+                })}
             </div>
+            {aiResponse && (
+                <div className="ai-response-popup">
+                    <strong>AI 비서의 조언:</strong>
+                    <p>{aiResponse}</p>
+                    <button onClick={() => setAiResponse(null)}>닫기</button>
+                </div>
+            )}
             <div className="chat-input-container">
                 <input
                     type="text"
@@ -250,14 +297,19 @@ const ChatRoom: React.FC = () => {
                 />
                 <button onClick={sendMessageButtonClickHandler}>Send</button>
                 <div className="ai-assistant-container">
-                    <button onClick={() => setShowOptions(!showOptions)}>AI Assistant</button>
+                    <button className="ai-assistant-button" onClick={() => setShowOptions(!showOptions)}>
+                        🤖 AI Secretary
+                    </button>
                     {showOptions && (
-                        <ul className="ai-options">
-                            <li onClick={() => handleAIAction("orthography")}>맞춤법 검사</li>
-                            <li onClick={() => handleAIAction("factCheck")}>팩트 체크</li>
-                            <li onClick={() => handleAIAction("summary")}>채팅 내용 요약</li>
-                            <li onClick={() => handleAIAction("recommendedText")}>상황에 맞는 추천 답변</li>
-                        </ul>
+                        <div className="ai-options-modal">
+                            <ul>
+                                <li onClick={() => handleAIAction("orthography")}>맞춤법 검사</li>
+                                <li onClick={() => handleAIAction("factCheck")}>팩트 체크</li>
+                                <li onClick={() => handleAIAction("summary")}>채팅 내용 요약</li>
+                                <li onClick={() => handleAIAction("recommendedText")}>상황에 맞는 추천 답변</li>
+                            </ul>
+                            <button onClick={() => setShowOptions(false)}>닫기</button>
+                        </div>
                     )}
                 </div>
             </div>
