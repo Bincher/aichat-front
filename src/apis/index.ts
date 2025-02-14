@@ -10,6 +10,8 @@ import PatchFriendRequestDto from "./request/friend/patch-friend.response.dto";
 import { GetSignInUserResponseDto } from "./response/user";
 import { CreateChatRoomRequestDto } from "./request/chat";
 import { CreateChatRoomResponseDto } from "./response/chat";
+import { GptFactCheckRequestDto, GptOrthographyRequestDto, GptRecommendTextRequestDto, GptSummaryRequestDto } from "./request/gpt";
+import { GptFactCheckResponseDto, GptOrthographyResponseDto, GptRecommendTextResponseDto, GptSummaryResponseDto } from "./response/gpt";
 
 const DOMAIN = 'http://localhost:8090';
 
@@ -33,6 +35,10 @@ const PATCH_FRIEND_URL =()=> `${API_DOMAIN}/friend/response`;
 const DELETE_FRIEND_URL =(nickname : String)=> `${API_DOMAIN}/friend/drop/${nickname}`;
 const GET_SIGN_IN_USER_URL =()=> `${API_DOMAIN}/user`;
 const CREATE_CHAT_ROOM_URL =()=> `${API_DOMAIN}/chat/chat-room/create`;
+const GPT_ORTHOGRAPHY_URL =()=> `${API_DOMAIN}/gpt/orthography`;
+const GPT_FACT_CHECK_URL =()=> `${API_DOMAIN}/gpt/fact-check`;
+const GPT_RECOMMEND_TEXT_URL =()=> `${API_DOMAIN}/gpt/recommend-text`;
+const GPT_SUMMARY_URL =()=> `${API_DOMAIN}/gpt/summary`;
 
 export const idCheckRequest = async (requestBody: IdCheckRequestDto)=>{
     const result = await axios.post(ID_CHECK_URL(), requestBody)
@@ -221,6 +227,62 @@ export const createChatRoomRequest = async (accessToken: string, requestBody: Cr
     const result = await axios.post(CREATE_CHAT_ROOM_URL(), requestBody, authorization(accessToken))
         .then(response =>{
             const responseBody: CreateChatRoomResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error =>{
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result;
+} 
+
+export const gptOrthography = async (requestBody: GptOrthographyRequestDto) =>{
+    const result = await axios.post(GPT_ORTHOGRAPHY_URL(), requestBody)
+        .then(response =>{
+            const responseBody: GptOrthographyResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error =>{
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result;
+} 
+
+export const gptFactCheck = async (requestBody: GptFactCheckRequestDto) =>{
+    const result = await axios.post(GPT_FACT_CHECK_URL(), requestBody)
+        .then(response =>{
+            const responseBody: GptFactCheckResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error =>{
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result;
+} 
+
+export const gptRecommendText = async (requestBody: GptRecommendTextRequestDto) =>{
+    const result = await axios.post(GPT_RECOMMEND_TEXT_URL(), requestBody)
+        .then(response =>{
+            const responseBody: GptRecommendTextResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error =>{
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result;
+} 
+
+export const gptSummary = async (requestBody: GptSummaryRequestDto) =>{
+    const result = await axios.post(GPT_SUMMARY_URL(), requestBody)
+        .then(response =>{
+            const responseBody: GptSummaryResponseDto = response.data;
             return responseBody;
         })
         .catch(error =>{
