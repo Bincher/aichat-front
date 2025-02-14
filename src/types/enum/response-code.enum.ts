@@ -11,6 +11,8 @@ export enum ResponseCode {
     DISAGREED_PERSONAL = "DP",
     EXISTED_FRIEND = "EF",
     DUPLICATE_POSTING = "DU",
+    NOT_EXISTED_PROMPT = "NP",
+    NOT_EXISTED_RESULT = "NR",
 
     // HTTP Status 401
     SIGN_IN_FAIL = "SF",

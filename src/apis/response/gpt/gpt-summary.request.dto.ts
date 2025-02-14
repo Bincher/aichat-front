@@ -1,6 +1,6 @@
 import ResponseDto from "../Response.dto";
 
 export default interface GptSummaryResponseDto extends ResponseDto{
-    recommendText: string;
+    recommendedText: string;
     roomId: string;
 }

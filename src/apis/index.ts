@@ -237,7 +237,7 @@ export const createChatRoomRequest = async (accessToken: string, requestBody: Cr
     return result;
 } 
 
-export const gptOrthography = async (requestBody: GptOrthographyRequestDto) =>{
+export const gptOrthographyRequest = async (requestBody: GptOrthographyRequestDto) =>{
     const result = await axios.post(GPT_ORTHOGRAPHY_URL(), requestBody)
         .then(response =>{
             const responseBody: GptOrthographyResponseDto = response.data;
@@ -251,7 +251,7 @@ export const gptOrthography = async (requestBody: GptOrthographyRequestDto) =>{
     return result;
 } 
 
-export const gptFactCheck = async (requestBody: GptFactCheckRequestDto) =>{
+export const gptFactCheckRequest = async (requestBody: GptFactCheckRequestDto) =>{
     const result = await axios.post(GPT_FACT_CHECK_URL(), requestBody)
         .then(response =>{
             const responseBody: GptFactCheckResponseDto = response.data;
@@ -265,7 +265,7 @@ export const gptFactCheck = async (requestBody: GptFactCheckRequestDto) =>{
     return result;
 } 
 
-export const gptRecommendText = async (requestBody: GptRecommendTextRequestDto) =>{
+export const gptRecommendTextRequest = async (requestBody: GptRecommendTextRequestDto) =>{
     const result = await axios.post(GPT_RECOMMEND_TEXT_URL(), requestBody)
         .then(response =>{
             const responseBody: GptRecommendTextResponseDto = response.data;
@@ -279,7 +279,7 @@ export const gptRecommendText = async (requestBody: GptRecommendTextRequestDto) 
     return result;
 } 
 
-export const gptSummary = async (requestBody: GptSummaryRequestDto) =>{
+export const gptSummaryRequest = async (requestBody: GptSummaryRequestDto) =>{
     const result = await axios.post(GPT_SUMMARY_URL(), requestBody)
         .then(response =>{
             const responseBody: GptSummaryResponseDto = response.data;
