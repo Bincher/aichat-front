@@ -122,7 +122,7 @@ const ChatRoom: React.FC = () => {
         fetchChatHistory();
     }, [chatRoomId]);
 
-    // WebSocket 연결 설정
+    // effect: WebSocket 연결 설정
     useEffect(() => {
         const websocket = new WebSocket("ws://localhost:8090/ws/chat");
         websocketRef.current = websocket;
@@ -170,7 +170,8 @@ const ChatRoom: React.FC = () => {
         }
     };
 
-    const handleAIAction = async (actionType: string) => {
+    // event handler: AI 비서 버튼 클릭 이벤트 해들러 //
+    const AISecretaryButtonClickHandler = async (actionType: string) => {
 
         try {
             let requestBody;
@@ -222,7 +223,8 @@ const ChatRoom: React.FC = () => {
         }
     };
     
-    const handleFactCheck = async (messageContent: string) => {
+    // event handler: 팩트 체크 클릭 이벤트 핸들러 //
+    const factCheckEventClickHandler = async (messageContent: string) => {
 
         const requestBody = {
             prompt : `'${messageContent}'은(는) 사실인지 검증해줘`
@@ -250,7 +252,7 @@ const ChatRoom: React.FC = () => {
                                 <>
                                     <button
                                             className="fact-check-button"
-                                            onClick={() => handleFactCheck(msg.content)}
+                                            onClick={() => factCheckEventClickHandler(msg.content)}
                                         >
                                             🕵️‍♂️ FactCheck
                                         </button>
@@ -270,7 +272,7 @@ const ChatRoom: React.FC = () => {
                                     </span>
                                     <button
                                         className="fact-check-button"
-                                        onClick={() => handleFactCheck(msg.content)}
+                                        onClick={() => factCheckEventClickHandler(msg.content)}
                                     >
                                         🕵️‍♂️ FactCheck
                                     </button>
@@ -303,10 +305,10 @@ const ChatRoom: React.FC = () => {
                     {showOptions && (
                         <div className="ai-options-modal">
                             <ul>
-                                <li onClick={() => handleAIAction("orthography")}>맞춤법 검사</li>
-                                <li onClick={() => handleAIAction("factCheck")}>팩트 체크</li>
-                                <li onClick={() => handleAIAction("summary")}>채팅 내용 요약</li>
-                                <li onClick={() => handleAIAction("recommendedText")}>상황에 맞는 추천 답변</li>
+                                <li onClick={() => AISecretaryButtonClickHandler("orthography")}>맞춤법 검사</li>
+                                <li onClick={() => AISecretaryButtonClickHandler("factCheck")}>팩트 체크</li>
+                                <li onClick={() => AISecretaryButtonClickHandler("summary")}>채팅 내용 요약</li>
+                                <li onClick={() => AISecretaryButtonClickHandler("recommendedText")}>상황에 맞는 추천 답변</li>
                             </ul>
                             <button onClick={() => setShowOptions(false)}>닫기</button>
                         </div>

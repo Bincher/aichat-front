@@ -39,6 +39,7 @@ const GPT_ORTHOGRAPHY_URL =()=> `${API_DOMAIN}/gpt/orthography`;
 const GPT_FACT_CHECK_URL =()=> `${API_DOMAIN}/gpt/fact-check`;
 const GPT_RECOMMEND_TEXT_URL =()=> `${API_DOMAIN}/gpt/recommend-text`;
 const GPT_SUMMARY_URL =()=> `${API_DOMAIN}/gpt/summary`;
+// const GET_CHAT_HISTORY_URL =(chatRoomId : String)=> `${API_DOMAIN}/chat/history${chatRoomId}`;
 
 export const idCheckRequest = async (requestBody: IdCheckRequestDto)=>{
     const result = await axios.post(ID_CHECK_URL(), requestBody)
