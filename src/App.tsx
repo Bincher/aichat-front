@@ -15,6 +15,7 @@ import { ResponseDto } from './apis/response';
 import { GetSignInUserResponseDto } from './apis/response/user';
 import { User } from './types/interface';
 import { GetSignInUserRequest } from './apis';
+import UserProfile from './views/UserProfile';
 
 
 //   component: Application 컴포넌트   //
@@ -57,9 +58,8 @@ function App() {
           <Route path={MAIN_PATH()} element={<Main />} />
           <Route path={AUTH_PATH()} element={<Authentication />} />
           <Route path={MY_CHAT_PATH()} element={<MyChat />} />
-          <Route path={USER_PATH("bincher")} element={<Main />} />
+          <Route path={USER_PATH()} element={<UserProfile />} />
           <Route path={CHAT_PATH(':chatRoomId')} element={<ChatRoom/>} />
-          <Route path={CHAT_DETAIL_PATH(1)} element={<Main />} />
         </Route>
         <Route path='*'  element={<h1>404 Not Found</h1>}/>
       </Routes>

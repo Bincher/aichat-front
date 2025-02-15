@@ -48,7 +48,7 @@ export default function Header() {
     
         // event handler: 마이페이지 버튼 클릭 이벤트 처리 함수 //
         const onMyPageButtonClickHandler =()=>{
-            alert("구현 준비 중");
+            navigate(USER_PATH());
         }
     
         // event handler: 로그아웃 버튼 클릭 이벤트 처리 함수 //
@@ -85,7 +85,7 @@ export default function Header() {
         setAuthPage(isAuthPage);
         const isMainPage = pathname === MAIN_PATH();
         setMainPage(isMainPage);
-        const isUserPage = pathname.startsWith(USER_PATH(''));
+        const isUserPage = pathname.startsWith(USER_PATH());
         setUserPage(isUserPage);
         const isMyChatPage = pathname === MY_CHAT_PATH();
         setIsMyChatPage(isMyChatPage);

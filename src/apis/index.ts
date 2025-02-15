@@ -7,11 +7,12 @@ import { DeleteFriendResponseDto, GetInviteFriendResponseDto, GetMyFriendRespons
 import { PostFriendRequestDto } from "./request/friend";
 import PostFriendResponseDto from "./response/friend/post-friend.response.dto";
 import PatchFriendRequestDto from "./request/friend/patch-friend.response.dto";
-import { GetSignInUserResponseDto } from "./response/user";
+import { GetSignInUserResponseDto, GetUserResponseDto } from "./response/user";
 import { ChatRoomInformationRequestDto, CreateChatRoomRequestDto } from "./request/chat";
 import { ChatRoomInformationResponseDto, CreateChatRoomResponseDto } from "./response/chat";
 import { GptFactCheckRequestDto, GptOrthographyRequestDto, GptRecommendTextRequestDto, GptSummaryRequestDto } from "./request/gpt";
 import { GptFactCheckResponseDto, GptOrthographyResponseDto, GptRecommendTextResponseDto, GptSummaryResponseDto } from "./response/gpt";
+import { GetUserRequestDto } from "./request/user";
 
 const DOMAIN = 'http://localhost:8090';
 
@@ -41,6 +42,7 @@ const GPT_RECOMMEND_TEXT_URL =()=> `${API_DOMAIN}/gpt/recommend-text`;
 const GPT_SUMMARY_URL =()=> `${API_DOMAIN}/gpt/summary`;
 // const GET_CHAT_HISTORY_URL =(chatRoomId : String)=> `${API_DOMAIN}/chat/history${chatRoomId}`;
 const CHAT_ROOM_INFORMATION_URL =()=> `${API_DOMAIN}/chat/chat-room/this`
+const GET_USER_URL =()=> `${API_DOMAIN}/user/other`
 
 export const idCheckRequest = async (requestBody: IdCheckRequestDto)=>{
     const result = await axios.post(ID_CHECK_URL(), requestBody)
@@ -309,3 +311,16 @@ export const chatRoomInformationRequest = async (accessToken: string, requestBod
     return result;
 } 
 
+export const getUserRequest = async (accessToken: string, requestBody: GetUserRequestDto) =>{
+    const result = await axios.post(GET_USER_URL(), requestBody, authorization(accessToken))
+        .then(response =>{
+            const responseBody: GetUserResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error =>{
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result;
+} 

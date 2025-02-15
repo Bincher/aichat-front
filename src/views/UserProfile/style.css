@@ -1,0 +1,94 @@
+/* 전체 컨테이너 */
+.user-profile-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* 헤더 스타일 */
+  .user-profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .user-profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #007bff; /* 프로필 이미지 테두리 */
+  }
+  
+  h1 {
+    margin-top: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333333;
+  }
+  
+  /* 사용자 정보 섹션 */
+  .user-profile-info {
+    padding-top: 20px;
+  }
+  
+  .user-profile-info p {
+    font-size: 16px;
+    color: #555555;
+    margin-bottom: 10px;
+  }
+  
+  .user-profile-info strong {
+    color: #007bff; /* 강조 텍스트 색상 */
+  }
+  
+  /* 버튼 스타일 */
+  .edit-button {
+    display: block;
+    margin: auto;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff; /* 버튼 배경색 */
+    color: white; /* 텍스트 색상 */
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .edit-button:hover {
+    background-color: #0056b3; /* 호버 시 버튼 색상 */
+  }
+  
+  /* 반응형 스타일 */
+  @media (max-width: 768px) {
+   .user-profile-container {
+      padding: 20px;
+      margin-top:20 px
+   }
+  
+   h1 {
+      font-size :22 px
+   }
+  }
+  
+  .logout-button {
+    display: block;
+    width: calc(100% - 40px);
+    margin: auto;
+    margin-top: 30px;
+    padding: 10px;
+    background-color: #ff4d4f; /* 버튼 배경색 */
+    color: white; /* 텍스트 색상 */
+    border-radius: 5px;
+    border: none;
+    font-size: large;
+  }
+  
+  .logout-button:hover {
+    background-color: #d9363e; /* 호버 시 버튼 색상 */
+  }
