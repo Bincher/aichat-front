@@ -16,6 +16,7 @@
     font-size: 3rem; /* 큰 제목 크기 */
     font-weight: bold;
     margin-bottom: 1rem; /* 제목과 부제목 간격 */
+    color: white;
   }
   
   .subtitle {
@@ -47,6 +48,7 @@
   @media (max-width: 768px) {
       .main-title {
           font-size: 2.5rem; /* 작은 화면에서 제목 크기 축소 */
+          color: white;
       }
   
       .subtitle {
