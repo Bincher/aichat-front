@@ -14,7 +14,7 @@ import { GptFactCheckRequestDto, GptOrthographyRequestDto, GptRecommendTextReque
 import { GptFactCheckResponseDto, GptOrthographyResponseDto, GptRecommendTextResponseDto, GptSummaryResponseDto } from "./response/gpt";
 import { GetUserRequestDto } from "./request/user";
 
-const DOMAIN = 'http://localhost:8090';
+const DOMAIN = 'http://54.180.102.159:8080';
 
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
